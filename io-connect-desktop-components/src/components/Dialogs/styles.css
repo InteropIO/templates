@@ -1,0 +1,12 @@
+.modal {
+  display: block;
+}
+
+.modal-dialog {
+  height: 100%;
+  margin: 0;
+}
+
+.modal-content {
+  height: 100%;
+}
