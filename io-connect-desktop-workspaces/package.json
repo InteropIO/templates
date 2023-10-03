@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@glue42/desktop": "^5.12.1",
+    "@interopio/desktop": "^6.0.0",
     "@interopio/react-hooks": "^3.0.2",
     "@interopio/workspaces-api": "^3.0.2",
     "@interopio/workspaces-ui-react": "^3.0.2",

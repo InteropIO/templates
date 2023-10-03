@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import Workspaces, { getFrameId } from "@interopio/workspaces-ui-react";
 import "@interopio/workspaces-ui-react/dist/styles/workspaces.css";
 import { IOConnectContext } from '@interopio/react-hooks';
-import { Glue42 } from '@glue42/desktop';
+import { IOConnectDesktop } from '@interopio/desktop';
 import { IOConnectWorkspaces } from '@interopio/workspaces-api';
 import { UnsubscribeFunction } from 'callback-registry';
 import AfterTabs from './AfterTabs';
@@ -65,7 +65,7 @@ const App = () => {
             });
         }
 
-        const ioTyped = (window as any).io as Glue42.Glue;
+        const ioTyped = (window as any).io as IOConnectDesktop.API;
         ioTyped?.workspaces?.waitForFrame(getFrameId())
             .then(async (frame) => {
                 registerKeyToOpenLastWS(frame);

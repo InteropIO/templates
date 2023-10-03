@@ -1,8 +1,8 @@
-import { Glue42 } from "@glue42/desktop";
+import { IOConnectDesktop } from "@interopio/desktop";
 import { IOConnectWorkspaces } from "@interopio/workspaces-api";
 import { useEffect, useState } from "react";
 
-declare const window: Window & { io: Glue42.Glue };
+declare const window: Window & { io: IOConnectDesktop.API };
 
 export function useAddWindowButtonVisible(workspaceId: string, groupId: string) {
     const [visible, setVisible] = useState(true);
