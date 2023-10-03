@@ -9,7 +9,7 @@ import Glue, { Glue42 } from "@glue42/desktop";
 import { useCallback, useContext, useEffect, useState } from "react";
 import "@interopio/components-react/src/features/notifications/assets/styles/styles.css";
 
-function NotificationsWrapper() {
+function NotificationToastsWrapper() {
   useEffect(() => {
     document.title = "Notifications";
   }, []);
@@ -112,4 +112,4 @@ const Notifications = () => {
   ) : null;
 };
 
-export default NotificationsWrapper;
+export default NotificationToastsWrapper;

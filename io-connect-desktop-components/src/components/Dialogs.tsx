@@ -1,10 +1,14 @@
-import { Dialog, useDialogsContext, SingleInputDialog } from "@interopio/components-react";
+import {
+  Dialog,
+  useDialogsContext,
+  SingleInputDialog,
+} from "@interopio/components-react";
 import { useEffect } from "react";
 import LayoutModifiedDialog from "./Dialogs/LayoutModified";
 import "@glue42/theme/dist/t42bootstrap.bundle.css";
 import "./Dialogs/styles.css";
 
-function DialogWrapper() {
+function DialogsWrapper() {
   const { config, setResult } = useDialogsContext();
 
   useEffect(() => {
@@ -33,4 +37,4 @@ function DialogWrapper() {
     return <Dialog config={config} setResult={setResult} />;
   }
 }
-export default DialogWrapper;
+export default DialogsWrapper;

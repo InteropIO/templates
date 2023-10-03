@@ -8,14 +8,14 @@ import {
 import NoPage from "./components/NoPage";
 import { DialogsProvider } from "@interopio/components-react";
 
-const ChannelsSelector = React.lazy(
+const ChannelSelector = React.lazy(
   () => import("./components/ChannelSelector")
 );
 const Dialogs = React.lazy(() => import("./components/Dialogs"));
-const NotificationsToasts = React.lazy(
+const NotificationToasts = React.lazy(
   () => import("./components/Notifications/Toasts")
 );
-const NotificationsPanel = React.lazy(
+const NotificationPanel = React.lazy(
   () => import("./components/Notifications/Panel")
 );
 
@@ -26,15 +26,15 @@ const routes: RouteObject[] = [
   },
   {
     path: "channel-selector",
-    element: <ChannelsSelector />,
+    element: <ChannelSelector />,
   },
   {
     path: "notifications-toasts",
-    element: <NotificationsToasts />,
+    element: <NotificationToasts />,
   },
   {
     path: "notifications-panel",
-    element: <NotificationsPanel />,
+    element: <NotificationPanel />,
   },
   {
     path: "dialogs",

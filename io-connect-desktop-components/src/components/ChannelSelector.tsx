@@ -3,7 +3,7 @@ import { GlueProvider } from "@glue42/react-hooks";
 import Glue from "@glue42/desktop";
 import { useEffect } from "react";
 
-function ChannelsSelectorWrapper() {
+function ChannelSelectorWrapper() {
   useEffect(() => {
     document.title = "Channels Selector";
   }, []);
@@ -17,4 +17,4 @@ function ChannelsSelectorWrapper() {
     </GlueProvider>
   );
 }
-export default ChannelsSelectorWrapper;
+export default ChannelSelectorWrapper;
