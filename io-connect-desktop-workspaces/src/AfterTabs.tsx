@@ -19,7 +19,7 @@ const AfterTabs: React.FC<AfterTabsProps> = ({ groupId, workspaceId }) => {
     };
 
     return <>
-        {visible ? <AddWindowButton visible={visible} showPopup={showPopup} /> : <Fragment />}
+        {visible ? <AddWindowButton title="Add App" visible={visible} showPopup={showPopup} /> : <Fragment />}
     </>;
 }
 
