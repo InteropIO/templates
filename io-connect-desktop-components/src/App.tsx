@@ -6,7 +6,6 @@ import {
   createHashRouter,
 } from "react-router-dom";
 import NoPage from "./components/NoPage";
-import { DialogsProvider } from "@interopio/components-react";
 
 const ChannelSelector = React.lazy(
   () => import("./components/ChannelSelector")
@@ -38,11 +37,7 @@ const routes: RouteObject[] = [
   },
   {
     path: "dialogs",
-    element: (
-      <DialogsProvider>
-        <Dialogs />
-      </DialogsProvider>
-    ),
+    element: <Dialogs />,
   },
 ];
 

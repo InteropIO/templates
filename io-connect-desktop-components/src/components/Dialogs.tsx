@@ -1,11 +1,12 @@
 import {
   Dialog,
+  DialogsProvider,
   useDialogsContext,
   SingleInputDialog,
 } from "@interopio/components-react";
 import { useEffect } from "react";
 import LayoutModifiedDialog from "./Dialogs/LayoutModified";
-import "@glue42/theme/dist/t42bootstrap.bundle.css";
+import "@interopio/theme";
 import "./Dialogs/styles.css";
 
 function DialogsWrapper() {
@@ -24,17 +25,30 @@ function DialogsWrapper() {
       return config.context.isLayoutModified;
     }
   };
+
   const shouldShowLayoutModifiedDialog =
     isLayoutModified() &&
     (config.operation === "systemShutdown" ||
       config.operation === "systemRestart");
 
   if (shouldShowLayoutModifiedDialog) {
-    return <LayoutModifiedDialog config={config} setResult={setResult} />;
+    return (
+      <DialogsProvider>
+        <LayoutModifiedDialog config={config} setResult={setResult} />
+      </DialogsProvider>
+    );
   } else if (config.type === "SingleInputDialog") {
-    return <SingleInputDialog config={config} setResult={setResult} />;
+    return (
+      <DialogsProvider>
+        <SingleInputDialog config={config} setResult={setResult} />
+      </DialogsProvider>
+    );
   } else {
-    return <Dialog config={config} setResult={setResult} />;
+    return (
+      <DialogsProvider>
+        <Dialog config={config} setResult={setResult} />
+      </DialogsProvider>
+    );
   }
 }
 export default DialogsWrapper;
