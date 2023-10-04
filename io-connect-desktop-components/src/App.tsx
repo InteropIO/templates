@@ -6,6 +6,7 @@ import {
   createHashRouter,
 } from "react-router-dom";
 import NoPage from "./components/NoPage";
+import "@interopio/theme";
 
 const ChannelSelector = React.lazy(
   () => import("./components/ChannelSelector")

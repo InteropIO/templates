@@ -6,7 +6,6 @@ import {
 } from "@interopio/components-react";
 import { useEffect } from "react";
 import LayoutModifiedDialog from "./Dialogs/LayoutModified";
-import "@interopio/theme";
 import "./Dialogs/styles.css";
 
 function DialogsWrapper() {
