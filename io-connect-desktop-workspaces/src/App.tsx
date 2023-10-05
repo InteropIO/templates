@@ -4,7 +4,6 @@ import "@interopio/workspaces-ui-react/dist/styles/workspaces.css";
 import { IOConnectContext } from '@interopio/react-hooks';
 import { IOConnectDesktop } from '@interopio/desktop';
 import { IOConnectWorkspaces } from '@interopio/workspaces-api';
-import { UnsubscribeFunction } from 'callback-registry';
 import AfterTabs from './AfterTabs';
 import GroupHeaderButtons from './GroupHeaderButtons';
 
@@ -12,7 +11,7 @@ const App = () => {
     (window as any).io = useContext(IOConnectContext);
 
     useEffect(() => {
-        const shortcuts: { [id: string]: UnsubscribeFunction } = {};
+        const shortcuts: { [id: string]: () => void } = {};
 
         const registerKeyToFocusWS = async (frame: IOConnectWorkspaces.Frame, workspace: IOConnectWorkspaces.Workspace, index: number) => {
             if (index >= 9) {
