@@ -2,6 +2,8 @@ import { ChannelSelector, ThemeProvider } from "@interopio/components-react";
 import { GlueProvider } from "@glue42/react-hooks";
 import Glue from "@glue42/desktop";
 import { useEffect } from "react";
+import "@interopio/theme";
+import "@interopio/components-react/dist/styles/features/channel-selector/styles.css";
 
 function ChannelSelectorWrapper() {
   useEffect(() => {

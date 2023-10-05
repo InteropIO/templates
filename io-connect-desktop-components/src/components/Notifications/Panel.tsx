@@ -7,7 +7,8 @@ import {
 import { GlueProvider, GlueContext } from "@glue42/react-hooks";
 import Glue, { Glue42 } from "@glue42/desktop";
 import { useCallback, useContext, useEffect } from "react";
-import "@interopio/components-react/src/features/notifications/assets/styles/styles.css";
+import "@glue42/theme/dist/t42bootstrap.bundle.css";
+import "@interopio/components-react/dist/styles/features/notifications/styles.css";
 
 function NotificationsWrapper() {
   useEffect(() => {
