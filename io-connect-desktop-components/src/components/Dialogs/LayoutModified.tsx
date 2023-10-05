@@ -1,3 +1,4 @@
+import { useState, MouseEvent } from "react";
 import {
   Dialog,
   DialogBody,
@@ -5,13 +6,8 @@ import {
   DialogFooter,
   DialogProps,
 } from "@interopio/components-react";
-import "@glue42/theme/dist/components/themes.css";
-import "@glue42/theme/dist/components/reboot.css";
-import "@glue42/theme/dist/components/fonts.css";
-import "@glue42/theme/dist/components/modal.css";
-import "@glue42/theme/dist/components/buttons.css";
+import "@glue42/theme/dist/t42bootstrap.bundle.css";
 import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
-import { useState, MouseEvent } from "react";
 
 function ModifiedLayoutDialog(props: DialogProps) {
   const { setResult } = props;

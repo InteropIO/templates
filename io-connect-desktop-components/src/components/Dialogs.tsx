@@ -1,12 +1,12 @@
+import { useEffect } from "react";
 import {
   Dialog,
   useDialogsContext,
   SingleInputDialog,
 } from "@interopio/components-react";
-import { useEffect } from "react";
 import LayoutModifiedDialog from "./Dialogs/LayoutModified";
 import "@glue42/theme/dist/t42bootstrap.bundle.css";
-import "./Dialogs/styles.css";
+import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
 
 function DialogsWrapper() {
   const { config, setResult } = useDialogsContext();
