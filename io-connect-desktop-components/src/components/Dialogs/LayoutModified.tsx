@@ -6,8 +6,6 @@ import {
   DialogFooter,
   DialogProps,
 } from "@interopio/components-react";
-import "@glue42/theme/dist/t42bootstrap.bundle.css";
-import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
 
 function ModifiedLayoutDialog(props: DialogProps) {
   const { setResult } = props;
