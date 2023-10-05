@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import {
   Dialog,
   DialogsProvider,
-  ThemeProvider,
   useDialogsContext,
   SingleInputDialog,
 } from "@interopio/components-react";
