@@ -6,7 +6,12 @@ import {
 } from "@interopio/components-react";
 import { useEffect } from "react";
 import LayoutModifiedDialog from "./Dialogs/LayoutModified";
-import "./Dialogs/styles.css";
+import "@glue42/theme/dist/components/themes.css";
+import "@glue42/theme/dist/components/reboot.css";
+import "@glue42/theme/dist/components/fonts.css";
+import "@glue42/theme/dist/components/modal.css";
+import "@glue42/theme/dist/components/buttons.css";
+import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
 
 function DialogsWrapper() {
   const { config, setResult } = useDialogsContext();
