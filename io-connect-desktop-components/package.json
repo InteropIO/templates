@@ -6,7 +6,7 @@
   "dependencies": {
     "@glue42/desktop": "^5.23.1",
     "@glue42/react-hooks": "^2.19.3",
-    "@interopio/components-react": "^0.0.2",
+    "@interopio/components-react": "^0.0.4",
     "@interopio/theme": "^1.0.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
