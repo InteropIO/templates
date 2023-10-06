@@ -3,6 +3,7 @@ import {
   NotificationsProvider,
   useNotificationsContext,
   Toasts,
+  useShowHideWindow,
 } from "@interopio/components-react";
 import { GlueProvider, GlueContext } from "@glue42/react-hooks";
 import Glue, { Glue42 } from "@glue42/desktop";
@@ -67,39 +68,9 @@ const Notifications = () => {
     showPanel();
   }, [isPanelVisible, panelApplication]);
 
-  const showWindow = useCallback(() => {
-    const myWnd = glue?.windows.my();
+  useShowHideWindow(notifications.some((n) => n.state === "Active"));
 
-    if (myWnd && !myWnd.isVisible) {
-      return myWnd.show();
-    }
-
-    return Promise.resolve();
-  }, [glue?.windows]);
-
-  const hideWindow = useCallback(() => {
-    const myWnd = glue?.windows.my();
-
-    if (myWnd?.isVisible) {
-      return myWnd.hide();
-    }
-
-    return Promise.resolve();
-  }, [glue?.windows]);
-
-  useEffect(() => {
-    if (notifications.some((n) => n.state === "Active")) {
-      showWindow();
-    } else {
-      hideWindow();
-    }
-  }, [notifications, showWindow, hideWindow]);
-
-  if (isPanelVisible) {
-    return null;
-  }
-
-  return settings.enabledNotification ? (
+  return settings.enabledNotification && !isPanelVisible ? (
     <Toasts
       style={{
         display: `${
