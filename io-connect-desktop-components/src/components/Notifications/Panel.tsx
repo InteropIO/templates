@@ -38,7 +38,7 @@ function NotificationsWrapper() {
   );
 }
 
-const Notifications = () => {
+function Notifications() {
   const { isPanelVisible, settings, hidePanel } = useNotificationsContext();
 
   useShowHideWindow(isPanelVisible);
@@ -46,6 +46,6 @@ const Notifications = () => {
   useHideWindowOnFocusLost(settings.autoHidePanel, hidePanel);
 
   return <Panel style={{ display: `${isPanelVisible ? "flex" : "none"}` }} />;
-};
+}
 
 export default NotificationsWrapper;

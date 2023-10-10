@@ -7,7 +7,7 @@ import {
 } from "@interopio/components-react";
 import { GlueProvider, GlueContext } from "@glue42/react-hooks";
 import Glue, { Glue42 } from "@glue42/desktop";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
 
 function NotificationToastsWrapper() {
@@ -36,7 +36,7 @@ function NotificationToastsWrapper() {
   );
 }
 
-const Notifications = () => {
+function Notifications() {
   const { notifications, isPanelVisible, settings } = useNotificationsContext();
   const glue = useContext(GlueContext) as Glue42.Glue;
   const [panelApplication, setPanelApplication] =
@@ -79,6 +79,6 @@ const Notifications = () => {
       }}
     />
   ) : null;
-};
+}
 
 export default NotificationToastsWrapper;

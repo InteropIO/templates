@@ -9,9 +9,12 @@ import NoPage from "./components/NoPage";
 import "@interopio/theme";
 
 const ChannelSelector = React.lazy(
-  () => import("./components/ChannelSelector")
+  () => import("./components/ChannelSelector/ChannelSelector")
 );
-const Dialogs = React.lazy(() => import("./components/Dialogs"));
+const Dialogs = React.lazy(() => import("./components/Dialogs/Dialogs"));
+const IssueReporting = React.lazy(
+  () => import("./components/IssueReporting/IssueReporting")
+);
 const NotificationToasts = React.lazy(
   () => import("./components/Notifications/Toasts")
 );
@@ -29,6 +32,14 @@ const routes: RouteObject[] = [
     element: <ChannelSelector />,
   },
   {
+    path: "dialogs",
+    element: <Dialogs />,
+  },
+  {
+    path: "issue-reporting",
+    element: <IssueReporting />,
+  },
+  {
     path: "notifications-toasts",
     element: <NotificationToasts />,
   },
@@ -36,13 +47,9 @@ const routes: RouteObject[] = [
     path: "notifications-panel",
     element: <NotificationPanel />,
   },
-  {
-    path: "dialogs",
-    element: <Dialogs />,
-  },
 ];
 
-const router = createHashRouter(routes, {});
+const router = createBrowserRouter(routes, {});
 
 function App() {
   return (
