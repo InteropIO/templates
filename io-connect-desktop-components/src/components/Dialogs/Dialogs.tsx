@@ -7,6 +7,7 @@ import {
 } from "@interopio/components-react";
 import LayoutModifiedDialog from "./LayoutModified";
 import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
+import "@interopio/components-react/dist/styles/components/ui/header.css";
 
 function DialogsWrapper() {
   return (
