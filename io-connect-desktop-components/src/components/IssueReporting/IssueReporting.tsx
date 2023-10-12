@@ -1,6 +1,13 @@
 import { IssueReporting } from "@interopio/components-react";
 import "@interopio/components-react/dist/styles/features/issue-reporting/styles.css";
 import "@interopio/components-react/dist/styles/components/ui/header.css";
+import "@interopio/components-react/dist/styles/components/ui/footer.css";
+import "@interopio/components-react/dist/styles/components/ui/block.css";
+import "@interopio/components-react/dist/styles/components/ui/alert.css";
+import "@interopio/components-react/dist/styles/components/ui/progress.css";
+import "@interopio/components-react/dist/styles/components/form/checkbox.css";
+import "@interopio/components-react/dist/styles/components/form/radio.css";
+import "@interopio/components-react/dist/styles/components/form/textarea.css";
 
 function IssueReportingWrapper() {
   return (

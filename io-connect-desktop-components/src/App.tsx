@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import NoPage from "./components/NoPage";
 import "@interopio/theme";
+import "@interopio/components-react/dist/styles/variables.css";
 
 const ChannelSelector = React.lazy(
   () => import("./components/ChannelSelector/ChannelSelector")
