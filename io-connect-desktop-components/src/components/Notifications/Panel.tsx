@@ -10,6 +10,10 @@ import {
 import { GlueProvider } from "@glue42/react-hooks";
 import Glue from "@glue42/desktop";
 import { useEffect } from "react";
+import "@interopio/components-react/dist/styles/components/ui/header.css";
+import "@interopio/components-react/dist/styles/components/ui/footer.css";
+import "@interopio/components-react/dist/styles/components/ui/block.css";
+import "@interopio/components-react/dist/styles/components/ui/modal.css";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
 
 function NotificationsWrapper() {
