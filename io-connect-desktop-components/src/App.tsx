@@ -50,7 +50,7 @@ const routes: RouteObject[] = [
   },
 ];
 
-const router = createBrowserRouter(routes, {});
+const router = createHashRouter(routes, {});
 
 function App() {
   return (
