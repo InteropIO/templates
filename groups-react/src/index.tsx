@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { IOConnectProvider } from "@interopio/react-hooks";
-import IO, { IOConnectDesktop } from '@interopio/desktop';
+import IO from '@interopio/desktop';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <IOConnectProvider settings={{
       desktop: {
         factory: (config: any) => {
-          return IO() as Promise<IOConnectDesktop.API>;
+          return IO();
         }
       }
     }}>
