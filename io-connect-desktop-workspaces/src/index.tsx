@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {  IOConnectProvider} from '@interopio/react-hooks';
-import io from "@interopio/desktop";
+import IODesktop from "@interopio/desktop";
 import IOWorkspaces from "@interopio/workspaces-api";
 
 ReactDOM.render(
@@ -12,7 +12,7 @@ ReactDOM.render(
     <IOConnectProvider settings={{
       desktop: {
         factory: (_) => {
-          return io({ libraries: [IOWorkspaces], appManager: "skipIcons" })
+          return IODesktop({ libraries: [IOWorkspaces], appManager: "skipIcons" })
         }
       }
     }}>
