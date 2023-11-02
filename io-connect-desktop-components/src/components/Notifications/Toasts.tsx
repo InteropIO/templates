@@ -56,8 +56,10 @@ function Notifications() {
     const showPanel = async () => {
       if (isPanelVisible) {
         const instances = panelApplication?.instances;
+
         if (instances && instances.length > 0) {
           const gdWindow = await instances[0].getWindow();
+
           gdWindow.show();
         } else {
           panelApplication?.start();
