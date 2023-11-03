@@ -9,16 +9,18 @@ import "@interopio/components-react/dist/styles/components/form/radio.css";
 import "@interopio/components-react/dist/styles/components/form/textarea.css";
 import "@interopio/components-react/dist/styles/features/feedback/styles.css";
 
+const { FeedbackProvider, Feedback } = IOFeedback;
+
 function FeedbackWrapper() {
   return (
-    <IOFeedback.FeedbackProvider>
+    <FeedbackProvider>
       <FeedbackInner />
-    </IOFeedback.FeedbackProvider>
+    </FeedbackProvider>
   );
 }
 
 function FeedbackInner() {
-  return <IOFeedback.Feedback />;
+  return <Feedback />;
 }
 
 export default FeedbackWrapper;
