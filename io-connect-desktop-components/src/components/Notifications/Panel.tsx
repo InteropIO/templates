@@ -7,8 +7,8 @@ import {
   useHideWindowOnKeyUp,
   useHideWindowOnFocusLost,
 } from "@interopio/components-react";
-import { GlueProvider } from "@glue42/react-hooks";
-import Glue from "@glue42/desktop";
+import { IOConnectProvider } from "@interopio/react-hooks";
+import API from "@interopio/desktop";
 import { useEffect } from "react";
 import "@interopio/components-react/dist/styles/components/ui/header.css";
 import "@interopio/components-react/dist/styles/components/ui/footer.css";
@@ -22,11 +22,11 @@ function NotificationsWrapper() {
   }, []);
 
   return (
-    <GlueProvider
+    <IOConnectProvider
       settings={{
         desktop: {
           factory: () => {
-            return Glue({
+            return API({
               appManager: "full",
             });
           },
@@ -38,7 +38,7 @@ function NotificationsWrapper() {
           <Notifications />
         </NotificationsProvider>
       </ThemeProvider>
-    </GlueProvider>
+    </IOConnectProvider>
   );
 }
 

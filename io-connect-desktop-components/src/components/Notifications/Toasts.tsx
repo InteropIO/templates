@@ -5,8 +5,8 @@ import {
   Toasts,
   useShowHideWindow,
 } from "@interopio/components-react";
-import { GlueProvider, GlueContext } from "@glue42/react-hooks";
-import Glue, { Glue42 } from "@glue42/desktop";
+import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
+import API, { IOConnectDesktop } from "@interopio/desktop";
 import { useContext, useEffect, useState } from "react";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
 
@@ -16,11 +16,11 @@ function NotificationToastsWrapper() {
   }, []);
 
   return (
-    <GlueProvider
+    <IOConnectProvider
       settings={{
         desktop: {
           factory: () => {
-            return Glue({
+            return API({
               appManager: "full",
             });
           },
@@ -32,25 +32,25 @@ function NotificationToastsWrapper() {
           <Notifications />
         </NotificationsProvider>
       </ThemeProvider>
-    </GlueProvider>
+    </IOConnectProvider>
   );
 }
 
 function Notifications() {
   const { notifications, isPanelVisible, settings } = useNotificationsContext();
-  const glue = useContext(GlueContext) as Glue42.Glue;
+  const io = useContext(IOConnectContext) as IOConnectDesktop.API;
   const [panelApplication, setPanelApplication] =
-    useState<Glue42.AppManager.Application | null>(null);
+    useState<IOConnectDesktop.AppManager.Application | null>(null);
 
   useEffect(() => {
-    const myApplication = glue.appManager.myInstance.application;
+    const myApplication = io.appManager.myInstance.application;
     const panelAppName =
       myApplication.userProperties?.panelApplicationName ??
       "io-connect-notifications-panel-application";
-    const panelApp = glue.appManager.application(panelAppName);
+    const panelApp = io.appManager.application(panelAppName);
 
     setPanelApplication(panelApp);
-  }, [glue]);
+  }, [io]);
 
   useEffect(() => {
     const showPanel = async () => {

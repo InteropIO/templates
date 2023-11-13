@@ -1,6 +1,6 @@
 import { ChannelSelector, ThemeProvider } from "@interopio/components-react";
-import { GlueProvider } from "@glue42/react-hooks";
-import Glue from "@glue42/desktop";
+import { IOConnectProvider } from "@interopio/react-hooks";
+import API from "@interopio/desktop";
 import { useEffect } from "react";
 import "@interopio/components-react/dist/styles/features/channel-selector/styles.css";
 
@@ -9,13 +9,13 @@ function ChannelSelectorWrapper() {
     document.title = "Channels Selector";
   }, []);
   return (
-    <GlueProvider
-      settings={{ desktop: { factory: Glue, config: { channels: true } } }}
+    <IOConnectProvider
+      settings={{ desktop: { factory: API, config: { channels: true } } }}
     >
       <ThemeProvider>
         <ChannelSelector />
       </ThemeProvider>
-    </GlueProvider>
+    </IOConnectProvider>
   );
 }
 export default ChannelSelectorWrapper;
