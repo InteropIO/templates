@@ -18,4 +18,5 @@ function ChannelSelectorWrapper() {
     </IOConnectProvider>
   );
 }
+
 export default ChannelSelectorWrapper;

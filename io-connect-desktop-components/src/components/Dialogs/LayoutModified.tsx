@@ -25,43 +25,43 @@ function ModifiedLayoutDialog(props: DialogProps) {
   };
 
   const CustomDialogBody = (
-    <DialogBody style={{ flexDirection: "column", alignItems: "flex-start" }}>
-      <p style={{ marginBottom: "0.5em" }}>You have unsaved layout changes.</p>
-      <p style={{ marginBottom: "0.5em" }}>
-        Do you want to save them before closing?
-      </p>
+    <DialogBody>
+      <p>You have unsaved layout changes.</p>
+      <p>Do you want to save them before closing?</p>
     </DialogBody>
   );
 
   const CustomDialogFooter = (
-    <DialogFooter style={{ justifyContent: "flex-start" }}>
-      <DialogButton
-        id="save-changes"
-        color="primary"
-        onClick={handleClick}
-        onButtonFocused={handleFocusChanged}
-        onBlur={handleFocusLoss}
-      >
-        Save changes
-      </DialogButton>
-      <DialogButton
-        id="discard-changes"
-        color="secondary"
-        onClick={handleClick}
-        onButtonFocused={handleFocusChanged}
-        onBlur={handleFocusLoss}
-      >
-        Discard changes
-      </DialogButton>
-      <DialogButton
-        id="go-back"
-        color="link"
-        onClick={handleClick}
-        onButtonFocused={handleFocusChanged}
-        onBlur={handleFocusLoss}
-      >
-        Go back
-      </DialogButton>
+    <DialogFooter>
+      <div className="modal-footer-btns">
+        <DialogButton
+          id="save-changes"
+          color="primary"
+          onClick={handleClick}
+          onButtonFocused={handleFocusChanged}
+          onBlur={handleFocusLoss}
+        >
+          Save changes
+        </DialogButton>
+        <DialogButton
+          id="discard-changes"
+          color="secondary"
+          onClick={handleClick}
+          onButtonFocused={handleFocusChanged}
+          onBlur={handleFocusLoss}
+        >
+          Discard changes
+        </DialogButton>
+        <DialogButton
+          id="go-back"
+          color="link"
+          onClick={handleClick}
+          onButtonFocused={handleFocusChanged}
+          onBlur={handleFocusLoss}
+        >
+          Go back
+        </DialogButton>
+      </div>
     </DialogFooter>
   );
   return (
