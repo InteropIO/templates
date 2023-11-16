@@ -32,7 +32,7 @@ function ModifiedLayoutDialog(props: DialogProps) {
   );
 
   const CustomDialogFooter = (
-    <DialogFooter>
+    <DialogFooter style={{ textAlign: "left" }}>
       <div className="modal-footer-btns">
         <DialogButton
           id="save-changes"
