@@ -1,14 +1,15 @@
 import {
   ThemeProvider,
-  NotificationsProvider,
-  useNotificationsContext,
-  Toasts,
   useShowHideWindow,
+  IONotifications,
 } from "@interopio/components-react";
 import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
 import API, { IOConnectDesktop } from "@interopio/desktop";
 import { useContext, useEffect, useState } from "react";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
+
+const { NotificationsProvider, useNotificationsContext, Toasts } =
+  IONotifications;
 
 function NotificationToastsWrapper() {
   useEffect(() => {
