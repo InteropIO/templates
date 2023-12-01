@@ -1,13 +1,9 @@
 import { useState, MouseEvent } from "react";
-import {
-  Dialog,
-  DialogBody,
-  DialogButton,
-  DialogFooter,
-  DialogProps,
-} from "@interopio/components-react";
+import { IODialogs } from "@interopio/components-react";
 
-function ModifiedLayoutDialog(props: DialogProps) {
+const { Dialog, DialogBody, DialogButton, DialogFooter } = IODialogs;
+
+function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
   const { setResult } = props;
   const [focusedButton, setFocusedButton] = useState("save-changes");
 
@@ -45,7 +41,7 @@ function ModifiedLayoutDialog(props: DialogProps) {
         </DialogButton>
         <DialogButton
           id="discard-changes"
-          color="secondary"
+          color="default"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
