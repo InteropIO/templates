@@ -13,6 +13,9 @@ const ChannelSelector = React.lazy(
   () => import("./components/ChannelSelector/ChannelSelector")
 );
 const Dialogs = React.lazy(() => import("./components/Dialogs/Dialogs"));
+const DownloadManager = React.lazy(
+  () => import("./components/DownloadManager/DownloadManager")
+);
 const Feedback = React.lazy(() => import("./components/Feedback/Feedback"));
 const NotificationToasts = React.lazy(
   () => import("./components/Notifications/Toasts")
@@ -35,6 +38,10 @@ const routes: RouteObject[] = [
     element: <Dialogs />,
   },
   {
+    path: "download-manager",
+    element: <DownloadManager />,
+  },
+  {
     path: "feedback",
     element: <Feedback />,
   },
@@ -48,7 +55,7 @@ const routes: RouteObject[] = [
   },
 ];
 
-const router = createHashRouter(routes, {});
+const router = createBrowserRouter(routes, {});
 
 function App() {
   return (
