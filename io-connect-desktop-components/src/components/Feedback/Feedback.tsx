@@ -1,4 +1,5 @@
 import { IOFeedback } from "@interopio/components-react";
+import "@interopio/components-react/dist/styles/generic.css";
 import "@interopio/components-react/dist/styles/components/ui/header.css";
 import "@interopio/components-react/dist/styles/components/ui/footer.css";
 import "@interopio/components-react/dist/styles/components/ui/block.css";
