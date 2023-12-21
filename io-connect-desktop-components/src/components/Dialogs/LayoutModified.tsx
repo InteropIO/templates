@@ -29,7 +29,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
 
   const CustomDialogFooter = (
     <DialogFooter>
-      <div className="io-btn-group">
+      <div className="io-btn-group io-btn-group-right">
         <DialogButton
           id="save-changes"
           color="primary"
