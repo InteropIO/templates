@@ -28,8 +28,8 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
   );
 
   const CustomDialogFooter = (
-    <DialogFooter style={{ textAlign: "left" }}>
-      <div className="modal-footer-btns">
+    <DialogFooter>
+      <div className="io-btn-group">
         <DialogButton
           id="save-changes"
           color="primary"

@@ -1,9 +1,6 @@
 import { useEffect } from "react";
 import { IODialogs } from "@interopio/components-react";
 import LayoutModifiedDialog from "./LayoutModified";
-import "@interopio/components-react/dist/styles/components/ui/header.css";
-import "@interopio/components-react/dist/styles/components/ui/footer.css";
-import "@interopio/components-react/dist/styles/components/ui/modal.css";
 import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
 
 const { DialogsProvider, useDialogsContext, Dialog, SingleInputDialog } =
