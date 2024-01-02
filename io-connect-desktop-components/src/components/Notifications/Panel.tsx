@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   ThemeProvider,
   useShowHideWindow,
@@ -7,7 +8,6 @@ import {
 } from "@interopio/components-react";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import API from "@interopio/desktop";
-import { useEffect } from "react";
 import "@interopio/components-react/dist/styles/components/ui/header.css";
 import "@interopio/components-react/dist/styles/components/ui/footer.css";
 import "@interopio/components-react/dist/styles/components/ui/block.css";

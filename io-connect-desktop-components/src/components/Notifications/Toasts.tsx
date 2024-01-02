@@ -1,3 +1,4 @@
+import { useContext, useEffect, useState } from "react";
 import {
   ThemeProvider,
   useShowHideWindow,
@@ -5,7 +6,6 @@ import {
 } from "@interopio/components-react";
 import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
 import API, { IOConnectDesktop } from "@interopio/desktop";
-import { useContext, useEffect, useState } from "react";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
 
 const { NotificationsProvider, useNotificationsContext, Toasts } =
@@ -38,8 +38,8 @@ function NotificationToastsWrapper() {
 }
 
 function Notifications() {
-  const { notifications, isPanelVisible, settings } = useNotificationsContext();
   const io = useContext(IOConnectContext) as IOConnectDesktop.API;
+  const { notifications, isPanelVisible, settings } = useNotificationsContext();
   const [panelApplication, setPanelApplication] =
     useState<IOConnectDesktop.AppManager.Application | null>(null);
 

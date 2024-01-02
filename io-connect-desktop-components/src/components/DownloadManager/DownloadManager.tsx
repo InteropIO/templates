@@ -1,6 +1,6 @@
+import { useEffect } from "react";
 import { IODownloadManager, ThemeProvider } from "@interopio/components-react";
 import { IOConnectProvider } from "@interopio/react-hooks";
-import "@interopio/components-react/dist/styles/generic.css";
 import "@interopio/components-react/dist/styles/components/ui/header.css";
 import "@interopio/components-react/dist/styles/components/ui/footer.css";
 import "@interopio/components-react/dist/styles/components/ui/block.css";
@@ -10,6 +10,10 @@ import "@interopio/components-react/dist/styles/features/download-manager/styles
 const { DownloadManagerProvider, DownloadManager } = IODownloadManager;
 
 function DownloadManagerWrapper() {
+  useEffect(() => {
+    document.title = "Download Manager";
+  }, []);
+
   return (
     <IOConnectProvider settings={{}}>
       <ThemeProvider>
