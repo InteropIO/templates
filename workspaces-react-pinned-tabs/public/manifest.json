@@ -1,6 +1,6 @@
 {
-  "short_name": "io.Connect Intents Resolver App",
-  "name": "io.Connect Intents Resolver App",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",
