@@ -6,12 +6,14 @@ import {
   createHashRouter,
 } from "react-router-dom";
 import NoPage from "./components/NoPage";
-import { DialogsProvider } from "@interopio/components-react";
+import "@interopio/theme";
+import "@interopio/components-react/dist/styles/variables.css";
 
 const ChannelSelector = React.lazy(
-  () => import("./components/ChannelSelector")
+  () => import("./components/ChannelSelector/ChannelSelector")
 );
-const Dialogs = React.lazy(() => import("./components/Dialogs"));
+const Dialogs = React.lazy(() => import("./components/Dialogs/Dialogs"));
+const Feedback = React.lazy(() => import("./components/Feedback/Feedback"));
 const NotificationToasts = React.lazy(
   () => import("./components/Notifications/Toasts")
 );
@@ -29,20 +31,20 @@ const routes: RouteObject[] = [
     element: <ChannelSelector />,
   },
   {
+    path: "dialogs",
+    element: <Dialogs />,
+  },
+  {
+    path: "feedback",
+    element: <Feedback />,
+  },
+  {
     path: "notifications-toasts",
     element: <NotificationToasts />,
   },
   {
     path: "notifications-panel",
     element: <NotificationPanel />,
-  },
-  {
-    path: "dialogs",
-    element: (
-      <DialogsProvider>
-        <Dialogs />
-      </DialogsProvider>
-    ),
   },
 ];
 
