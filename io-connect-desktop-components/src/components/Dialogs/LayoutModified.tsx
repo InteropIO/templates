@@ -1,5 +1,5 @@
 import { useState, MouseEvent } from "react";
-import { IODialogs } from "@interopio/components-react";
+import { ButtonGroup, IODialogs } from "@interopio/components-react";
 
 const { Dialog, DialogBody, DialogButton, DialogFooter } = IODialogs;
 
@@ -29,7 +29,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
 
   const CustomDialogFooter = (
     <DialogFooter>
-      <div className="io-btn-group io-btn-group-right">
+      <ButtonGroup fullwidth={true}>
         <DialogButton
           id="save-changes"
           color="primary"
@@ -50,14 +50,14 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
         </DialogButton>
         <DialogButton
           id="go-back"
-          color="link"
+          color="default"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
         >
           Go back
         </DialogButton>
-      </div>
+      </ButtonGroup>
     </DialogFooter>
   );
   return (
