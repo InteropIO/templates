@@ -1,14 +1,20 @@
 import { useEffect } from "react";
-import {
-  Dialog,
-  useDialogsContext,
-  SingleInputDialog,
-} from "@interopio/components-react";
-import LayoutModifiedDialog from "./Dialogs/LayoutModified";
-import "@glue42/theme/dist/t42bootstrap.bundle.css";
+import { IODialogs } from "@interopio/components-react";
+import LayoutModifiedDialog from "./LayoutModified";
 import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
 
+const { DialogsProvider, useDialogsContext, Dialog, SingleInputDialog } =
+  IODialogs;
+
 function DialogsWrapper() {
+  return (
+    <DialogsProvider>
+      <Dialogs />
+    </DialogsProvider>
+  );
+}
+
+function Dialogs() {
   const { config, setResult } = useDialogsContext();
 
   useEffect(() => {
@@ -24,6 +30,7 @@ function DialogsWrapper() {
       return config.context.isLayoutModified;
     }
   };
+
   const shouldShowLayoutModifiedDialog =
     isLayoutModified() &&
     (config.operation === "systemShutdown" ||
@@ -37,4 +44,5 @@ function DialogsWrapper() {
     return <Dialog config={config} setResult={setResult} />;
   }
 }
+
 export default DialogsWrapper;
