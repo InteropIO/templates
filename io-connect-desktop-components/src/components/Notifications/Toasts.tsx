@@ -77,7 +77,7 @@ function Notifications() {
     <Toasts
       style={{
         display: `${
-          notifications.some((n) => n.state === "Active") ? "block" : "none"
+          notifications.some((n) => n.state === "Active") ? "flex" : "none"
         }`,
       }}
     />

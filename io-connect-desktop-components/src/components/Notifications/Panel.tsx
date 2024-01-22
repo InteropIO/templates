@@ -50,7 +50,14 @@ function Notifications() {
   useHideWindowOnKeyUp("Escape", hidePanel);
   useHideWindowOnFocusLost(settings.autoHidePanel, hidePanel);
 
-  return <Panel style={{ display: `${isPanelVisible ? "flex" : "none"}` }} />;
+  return (
+    <Panel
+      style={{ display: `${isPanelVisible ? "flex" : "none"}` }}
+      components={{
+        SettingsGeneralPanelAlwaysOnTop: () => <></>,
+      }}
+    />
+  );
 }
 
 export default NotificationsWrapper;
