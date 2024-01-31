@@ -42,6 +42,8 @@ function Notifications() {
   const { notifications, isPanelVisible, settings } = useNotificationsContext();
   const [panelApplication, setPanelApplication] =
     useState<IOConnectDesktop.AppManager.Application | null>(null);
+  const [appInstance, setAppInstance] =
+    useState<IOConnectDesktop.AppManager.Instance | null>(null);
 
   useEffect(() => {
     const myApplication = io.appManager.myInstance.application;
@@ -54,22 +56,40 @@ function Notifications() {
   }, [io]);
 
   useEffect(() => {
+    const un = appInstance?.onStopped(() => {
+      io?.notifications?.panel?.hide();
+    });
+
+    return () => {
+      if (un) {
+        un();
+      }
+    };
+  }, [io?.notifications?.panel, appInstance]);
+
+  useEffect(() => {
     const showPanel = async () => {
       if (isPanelVisible) {
         const instances = panelApplication?.instances;
 
         if (instances && instances.length > 0) {
-          const gdWindow = await instances[0].getWindow();
+          const instance = instances[0];
+          setAppInstance(instance);
 
+          const gdWindow = await instance.getWindow();
           gdWindow.show();
         } else {
-          panelApplication?.start();
+          const instance = await panelApplication?.start();
+
+          if (instance) {
+            setAppInstance(instance);
+          }
         }
       }
     };
 
     showPanel();
-  }, [isPanelVisible, panelApplication]);
+  }, [isPanelVisible, panelApplication, io]);
 
   useShowHideWindow(notifications.some((n) => n.state === "Active"));
 
