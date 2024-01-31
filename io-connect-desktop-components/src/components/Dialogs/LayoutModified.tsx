@@ -29,7 +29,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
 
   const CustomDialogFooter = (
     <DialogFooter>
-      <div className="io-btn-group io-btn-group-right">
+      <div className="io-btn-group io-btn-group-fullwidth">
         <DialogButton
           id="save-changes"
           color="primary"
@@ -50,7 +50,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
         </DialogButton>
         <DialogButton
           id="go-back"
-          color="link"
+          color="default"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
