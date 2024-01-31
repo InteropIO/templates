@@ -31,13 +31,13 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
     <DialogFooter>
       <div className="io-btn-group io-btn-group-fullwidth">
         <DialogButton
-          id="save-changes"
-          color="primary"
+          id="go-back"
+          color="default"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
         >
-          Save changes
+          Go back
         </DialogButton>
         <DialogButton
           id="discard-changes"
@@ -49,17 +49,18 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
           Discard changes
         </DialogButton>
         <DialogButton
-          id="go-back"
-          color="default"
+          id="save-changes"
+          color="primary"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
         >
-          Go back
+          Save changes
         </DialogButton>
       </div>
     </DialogFooter>
   );
+
   return (
     <Dialog {...props} body={CustomDialogBody} footer={CustomDialogFooter} />
   );
