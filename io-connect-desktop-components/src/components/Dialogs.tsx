@@ -27,7 +27,7 @@ function DialogsWrapper() {
   const shouldShowLayoutModifiedDialog =
     isLayoutModified() &&
     (config.operation === "systemShutdown" ||
-      config.operation === "systemRestart");
+      config.operation === "systemRestart" || config.operation === "layoutRestore");
 
   if (shouldShowLayoutModifiedDialog) {
     return <LayoutModifiedDialog config={config} setResult={setResult} />;
