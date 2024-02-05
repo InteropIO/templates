@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import IOBrowser from "@interopio/browser";
-import Glue from "@glue42/desktop";
+import IODesktop from "@interopio/desktop";
 import IOConnectIntentsResolver from "@interopio/intents-resolver-api";
 import { IOConnectProvider } from '@interopio/react-hooks';
 import "@glue42/theme";
@@ -18,7 +18,7 @@ root.render(
     },
     desktop: {
       config: { libraries: [IOConnectIntentsResolver], appManager: "full", intents: { enableIntentsResolverUI: false } },
-      factory: Glue
+      factory: IODesktop
     }
   }}>
     <App />

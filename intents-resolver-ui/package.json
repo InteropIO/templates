@@ -4,9 +4,9 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@glue42/desktop": "^5.18.2",
     "@glue42/theme": "^4.0.5",
     "@interopio/browser": "^3.0.2",
+    "@interopio/desktop": "^6.1.0",
     "@interopio/intents-resolver-api": "^2.1.0",
     "@interopio/react-hooks": "^3.0.2",
     "@testing-library/jest-dom": "^5.16.5",
