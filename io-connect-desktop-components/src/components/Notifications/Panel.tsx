@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import {
   ThemeProvider,
   useShowHideWindow,
@@ -6,8 +6,8 @@ import {
   useHideWindowOnFocusLost,
   IONotifications,
 } from "@interopio/components-react";
-import { IOConnectProvider } from "@interopio/react-hooks";
-import API from "@interopio/desktop";
+import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
+import API, { IOConnectDesktop } from "@interopio/desktop";
 import "@interopio/components-react/dist/styles/components/ui/header.css";
 import "@interopio/components-react/dist/styles/components/ui/footer.css";
 import "@interopio/components-react/dist/styles/components/ui/block.css";
@@ -44,11 +44,20 @@ function NotificationsWrapper() {
 }
 
 function Notifications() {
+  const io = useContext(IOConnectContext) as IOConnectDesktop.API;
   const { isPanelVisible, settings, hidePanel } = useNotificationsContext();
 
   useShowHideWindow(isPanelVisible);
   useHideWindowOnKeyUp("Escape", hidePanel);
   useHideWindowOnFocusLost(settings.autoHidePanel, hidePanel);
+
+  useEffect(() => {
+    const myWin = io.windows.my();
+
+    if (isPanelVisible) {
+      myWin?.focus();
+    }
+  }, [io, isPanelVisible]);
 
   return (
     <Panel
