@@ -22,8 +22,10 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
 
   const CustomDialogBody = (
     <DialogBody>
-      <p>You have unsaved layout changes.</p>
-      <p>Do you want to save them before closing?</p>
+      <p>
+        The Layout has been modified. Do you want to save or discard the changes
+        before closing?
+      </p>
     </DialogBody>
   );
 
@@ -37,7 +39,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
         >
-          Go back
+          Cancel
         </DialogButton>
         <DialogButton
           id="discard-changes"
@@ -46,7 +48,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
         >
-          Discard changes
+          Discard
         </DialogButton>
         <DialogButton
           id="save-changes"
@@ -55,7 +57,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
         >
-          Save changes
+          Save
         </DialogButton>
       </div>
     </DialogFooter>
