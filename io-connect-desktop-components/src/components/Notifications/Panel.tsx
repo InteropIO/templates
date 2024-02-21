@@ -1,17 +1,21 @@
+import { useContext, useEffect } from "react";
 import {
   ThemeProvider,
-  NotificationsProvider,
-  useNotificationsContext,
-  Panel,
   useShowHideWindow,
   useHideWindowOnKeyUp,
   useHideWindowOnFocusLost,
+  IONotifications,
 } from "@interopio/components-react";
-import { GlueProvider } from "@glue42/react-hooks";
-import Glue from "@glue42/desktop";
-import { useEffect } from "react";
-import "@glue42/theme/dist/t42bootstrap.bundle.css";
+import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
+import API, { IOConnectDesktop } from "@interopio/desktop";
+import "@interopio/components-react/dist/styles/components/ui/header.css";
+import "@interopio/components-react/dist/styles/components/ui/footer.css";
+import "@interopio/components-react/dist/styles/components/ui/block.css";
+import "@interopio/components-react/dist/styles/components/ui/modal.css";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
+
+const { NotificationsProvider, useNotificationsContext, Panel } =
+  IONotifications;
 
 function NotificationsWrapper() {
   useEffect(() => {
@@ -19,11 +23,11 @@ function NotificationsWrapper() {
   }, []);
 
   return (
-    <GlueProvider
+    <IOConnectProvider
       settings={{
         desktop: {
           factory: () => {
-            return Glue({
+            return API({
               appManager: "full",
             });
           },
@@ -35,18 +39,34 @@ function NotificationsWrapper() {
           <Notifications />
         </NotificationsProvider>
       </ThemeProvider>
-    </GlueProvider>
+    </IOConnectProvider>
   );
 }
 
-const Notifications = () => {
+function Notifications() {
+  const io = useContext(IOConnectContext) as IOConnectDesktop.API;
   const { isPanelVisible, settings, hidePanel } = useNotificationsContext();
 
   useShowHideWindow(isPanelVisible);
   useHideWindowOnKeyUp("Escape", hidePanel);
   useHideWindowOnFocusLost(settings.autoHidePanel, hidePanel);
 
-  return <Panel style={{ display: `${isPanelVisible ? "flex" : "none"}` }} />;
-};
+  useEffect(() => {
+    const myWin = io.windows.my();
+
+    if (isPanelVisible) {
+      myWin?.focus();
+    }
+  }, [io, isPanelVisible]);
+
+  return (
+    <Panel
+      style={{ display: `${isPanelVisible ? "flex" : "none"}` }}
+      components={{
+        SettingsGeneralPanelAlwaysOnTop: () => <></>,
+      }}
+    />
+  );
+}
 
 export default NotificationsWrapper;

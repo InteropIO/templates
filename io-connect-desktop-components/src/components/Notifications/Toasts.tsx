@@ -1,15 +1,15 @@
+import { useContext, useEffect, useState } from "react";
 import {
   ThemeProvider,
-  NotificationsProvider,
-  useNotificationsContext,
-  Toasts,
   useShowHideWindow,
+  IONotifications,
 } from "@interopio/components-react";
-import { GlueProvider, GlueContext } from "@glue42/react-hooks";
-import Glue, { Glue42 } from "@glue42/desktop";
-import { useState, useEffect, useContext } from "react";
-import "@glue42/theme/dist/t42bootstrap.bundle.css";
+import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
+import API, { IOConnectDesktop } from "@interopio/desktop";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
+
+const { NotificationsProvider, useNotificationsContext, Toasts } =
+  IONotifications;
 
 function NotificationToastsWrapper() {
   useEffect(() => {
@@ -17,11 +17,11 @@ function NotificationToastsWrapper() {
   }, []);
 
   return (
-    <GlueProvider
+    <IOConnectProvider
       settings={{
         desktop: {
           factory: () => {
-            return Glue({
+            return API({
               appManager: "full",
             });
           },
@@ -33,25 +33,39 @@ function NotificationToastsWrapper() {
           <Notifications />
         </NotificationsProvider>
       </ThemeProvider>
-    </GlueProvider>
+    </IOConnectProvider>
   );
 }
 
-const Notifications = () => {
+function Notifications() {
+  const io = useContext(IOConnectContext) as IOConnectDesktop.API;
   const { notifications, isPanelVisible, settings } = useNotificationsContext();
-  const glue = useContext(GlueContext) as Glue42.Glue;
   const [panelApplication, setPanelApplication] =
-    useState<Glue42.AppManager.Application | null>(null);
+    useState<IOConnectDesktop.AppManager.Application | null>(null);
+  const [appInstance, setAppInstance] =
+    useState<IOConnectDesktop.AppManager.Instance | null>(null);
 
   useEffect(() => {
-    const myApplication = glue.appManager.myInstance.application;
+    const myApplication = io.appManager.myInstance.application;
     const panelAppName =
       myApplication.userProperties?.panelApplicationName ??
       "io-connect-notifications-panel-application";
-    const panelApp = glue.appManager.application(panelAppName);
+    const panelApp = io.appManager.application(panelAppName);
 
     setPanelApplication(panelApp);
-  }, [glue]);
+  }, [io]);
+
+  useEffect(() => {
+    const un = appInstance?.onStopped(() => {
+      io?.notifications?.panel?.hide();
+    });
+
+    return () => {
+      if (un) {
+        un();
+      }
+    };
+  }, [io?.notifications?.panel, appInstance]);
 
   useEffect(() => {
     const showPanel = async () => {
@@ -59,29 +73,35 @@ const Notifications = () => {
         const instances = panelApplication?.instances;
 
         if (instances && instances.length > 0) {
-          const gdWindow = await instances[0].getWindow();
+          const instance = instances[0];
+          setAppInstance(instance);
 
+          const gdWindow = await instance.getWindow();
           gdWindow.show();
         } else {
-          panelApplication?.start();
+          const instance = await panelApplication?.start();
+
+          if (instance) {
+            setAppInstance(instance);
+          }
         }
       }
     };
 
     showPanel();
-  }, [isPanelVisible, panelApplication]);
+  }, [isPanelVisible, panelApplication, io]);
 
   useShowHideWindow(notifications.some((n) => n.state === "Active"));
 
-  return settings.enabledNotification && !isPanelVisible ? (
+  return settings.enabledToasts && !isPanelVisible ? (
     <Toasts
       style={{
         display: `${
-          notifications.some((n) => n.state === "Active") ? "block" : "none"
+          notifications.some((n) => n.state === "Active") ? "flex" : "none"
         }`,
       }}
     />
   ) : null;
-};
+}
 
 export default NotificationToastsWrapper;

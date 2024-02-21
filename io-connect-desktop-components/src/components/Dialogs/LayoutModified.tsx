@@ -1,15 +1,9 @@
 import { useState, MouseEvent } from "react";
-import {
-  Dialog,
-  DialogBody,
-  DialogButton,
-  DialogFooter,
-  DialogProps,
-} from "@interopio/components-react";
-import "@glue42/theme/dist/t42bootstrap.bundle.css";
-import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
+import { IODialogs } from "@interopio/components-react";
 
-function ModifiedLayoutDialog(props: DialogProps) {
+const { Dialog, DialogBody, DialogButton, DialogFooter } = IODialogs;
+
+function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
   const { setResult } = props;
   const [focusedButton, setFocusedButton] = useState("save-changes");
 
@@ -27,45 +21,48 @@ function ModifiedLayoutDialog(props: DialogProps) {
   };
 
   const CustomDialogBody = (
-    <DialogBody style={{ flexDirection: "column", alignItems: "flex-start" }}>
-      <p style={{ marginBottom: "0.5em" }}>You have unsaved layout changes.</p>
-      <p style={{ marginBottom: "0.5em" }}>
-        Do you want to save them before closing?
+    <DialogBody>
+      <p>
+        The Layout has been modified. Do you want to save or discard the changes
+        before closing?
       </p>
     </DialogBody>
   );
 
   const CustomDialogFooter = (
-    <DialogFooter style={{ justifyContent: "flex-start" }}>
-      <DialogButton
-        id="save-changes"
-        color="primary"
-        onClick={handleClick}
-        onButtonFocused={handleFocusChanged}
-        onBlur={handleFocusLoss}
-      >
-        Save changes
-      </DialogButton>
-      <DialogButton
-        id="discard-changes"
-        color="secondary"
-        onClick={handleClick}
-        onButtonFocused={handleFocusChanged}
-        onBlur={handleFocusLoss}
-      >
-        Discard changes
-      </DialogButton>
-      <DialogButton
-        id="go-back"
-        color="link"
-        onClick={handleClick}
-        onButtonFocused={handleFocusChanged}
-        onBlur={handleFocusLoss}
-      >
-        Go back
-      </DialogButton>
+    <DialogFooter>
+      <div className="io-btn-group io-btn-group-fullwidth">
+        <DialogButton
+          id="go-back"
+          color="default"
+          onClick={handleClick}
+          onButtonFocused={handleFocusChanged}
+          onBlur={handleFocusLoss}
+        >
+          Cancel
+        </DialogButton>
+        <DialogButton
+          id="discard-changes"
+          color="default"
+          onClick={handleClick}
+          onButtonFocused={handleFocusChanged}
+          onBlur={handleFocusLoss}
+        >
+          Discard
+        </DialogButton>
+        <DialogButton
+          id="save-changes"
+          color="primary"
+          onClick={handleClick}
+          onButtonFocused={handleFocusChanged}
+          onBlur={handleFocusLoss}
+        >
+          Save
+        </DialogButton>
+      </div>
     </DialogFooter>
   );
+
   return (
     <Dialog {...props} body={CustomDialogBody} footer={CustomDialogFooter} />
   );
