@@ -44,20 +44,11 @@ function NotificationsWrapper() {
 }
 
 function Notifications() {
-  const io = useContext(IOConnectContext) as IOConnectDesktop.API;
   const { isPanelVisible, settings, hidePanel } = useNotificationsContext();
 
-  useShowHideWindow(isPanelVisible);
+  useShowHideWindow(isPanelVisible, true);
   useHideWindowOnKeyUp("Escape", hidePanel);
   useHideWindowOnFocusLost(settings.autoHidePanel, hidePanel);
-
-  useEffect(() => {
-    const myWin = io.windows.my();
-
-    if (isPanelVisible) {
-      myWin?.focus();
-    }
-  }, [io, isPanelVisible]);
 
   return (
     <Panel
