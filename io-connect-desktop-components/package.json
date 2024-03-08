@@ -5,7 +5,7 @@
   "homepage": "./",
   "dependencies": {
     "@interopio/components-react": "^0.1.0",
-    "@interopio/desktop": "^6.2.0",
+    "@interopio/desktop": "^6.2.2",
     "@interopio/react-hooks": "^3.1.2",
     "@interopio/theme": "^2.0.6",
     "@testing-library/jest-dom": "^5.16.5",
