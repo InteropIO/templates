@@ -34,7 +34,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
       <div className="io-btn-group io-btn-group-fullwidth">
         <DialogButton
           id="go-back"
-          variation="outline"
+          variant="outline"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
@@ -43,7 +43,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
         </DialogButton>
         <DialogButton
           id="discard-changes"
-          variation="outline"
+          variant="outline"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
@@ -52,7 +52,7 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
         </DialogButton>
         <DialogButton
           id="save-changes"
-          variation="primary"
+          variant="primary"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}

@@ -7,8 +7,6 @@ import {
 } from "react-router-dom";
 import NoPage from "./components/NoPage";
 import "@interopio/theme";
-import "@interopio/components-react/dist/styles/variables.css";
-import "@interopio/components-react/dist/styles/generic.css";
 
 const ChannelSelector = React.lazy(
   () => import("./components/ChannelSelector/ChannelSelector")
@@ -56,7 +54,7 @@ const routes: RouteObject[] = [
   },
 ];
 
-const router = createHashRouter(routes, {});
+const router = createBrowserRouter(routes, {});
 
 function App() {
   return (
