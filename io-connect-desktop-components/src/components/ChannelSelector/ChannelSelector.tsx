@@ -11,10 +11,6 @@ function ChannelSelectorInner() {
   const ref = useRef(null);
   const { channels, onChannelSelected, variant } = useChannels(ref);
 
-  useEffect(() => {
-    document.title = "Channels Selector";
-  }, []);
-
   return (
     <ChannelSelector
       variant={variant}

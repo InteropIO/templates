@@ -13,7 +13,7 @@ import { IOChannelSelector, useKeyDown } from "@interopio/components-react";
 interface ChannelSelectorAction {
   command: "will-show";
   windowId: string;
-  channels: IOConnectDesktop.ChannelContext[];
+  channels: ChannelContextExtended[];
   variant: "single" | "directionalSingle";
 }
 
@@ -23,9 +23,14 @@ interface ChannelSelectorActionResult {
   x: number;
   y: number;
 }
+interface ChannelContextExtended extends IOConnectDesktop.ChannelContext {
+  isSelected?: boolean;
+  read?: boolean;
+  write?: boolean;
+}
 
 function getChannelProps(
-  channelInfo: IOConnectDesktop.ChannelContext[],
+  channelInfo: ChannelContextExtended[],
   selectedColor?: string
 ): IOChannelSelector.ChannelInfo[] {
   const letters = Array.from({ length: channelInfo.length }, (_, i) =>
@@ -41,6 +46,8 @@ function getChannelProps(
       name: c.name,
       isSelected: c.name === selectedColor,
       label: letters[i],
+      write: c.write,
+      read: c.read,
     };
   });
 }
@@ -69,16 +76,24 @@ export default function useChannels(refUl: React.RefObject<HTMLDivElement>) {
     ) => {
       if (action.command === "will-show") {
         const init = async () => {
+          successCallback.current = sb;
           setChannels([]);
           setIsLoading(true);
           const id = action.windowId;
           const channelInfo = action.channels;
+          let isSelected = channelInfo.find((c) => c.isSelected);
+          let selectedChannel = isSelected?.name;
+
+          // Keep backward compatibility - io.CD sends isSelected as boolean
+          if (typeof selectedChannel === "undefined") {
+            const window = io?.windows.findById(id);
+            const windowChannel = await window?.getChannel();
+            selectedChannel = windowChannel;
+          }
+
           setVariant(action.variant);
-          successCallback.current = sb;
-          const window = io?.windows.findById(id);
-          const windowChannel = await window?.getChannel();
           setWindowId(id);
-          setChannels(getChannelProps(channelInfo, windowChannel));
+          setChannels(getChannelProps(channelInfo, selectedChannel));
           setIsLoading(false);
         };
 
@@ -92,11 +107,15 @@ export default function useChannels(refUl: React.RefObject<HTMLDivElement>) {
   );
 
   const onChannelSelected = useCallback(
-    ({ name }: IOChannelSelector.ChannelInfo) => {
+    ({ name, read, write }: IOChannelSelector.ChannelInfo) => {
       const hideWindow = () => {
+        if (variant === "directionalSingle") {
+          return;
+        }
         return myWnd?.hide();
       };
-      if (name.length === 0) {
+      const prevSelected = channels?.find((c) => c.isSelected)?.name;
+      if (prevSelected === name) {
         io?.channels.leave(windowId).finally(() => {
           void hideWindow();
         });
@@ -105,8 +124,38 @@ export default function useChannels(refUl: React.RefObject<HTMLDivElement>) {
           void hideWindow();
         });
       }
+
+      const channelsAPI = io?.channels as any;
+      if (
+        variant === "directionalSingle" &&
+        typeof channelsAPI?.restrict === "function"
+      ) {
+        void channelsAPI?.restrict({ name, read, write, windowId });
+      }
+
+      setChannels((prev) => {
+        if (!prev) {
+          return prev;
+        }
+        return prev.map((c) => {
+          if (prevSelected && c.name === prevSelected) {
+            c.isSelected = false;
+          } else {
+            c.isSelected = c.name === name;
+          }
+          if (c.isSelected) {
+            c.read = read;
+            c.write = write;
+          } else {
+            c.read = false;
+            c.write = false;
+          }
+
+          return c;
+        });
+      });
     },
-    [io?.channels, myWnd, windowId]
+    [io?.channels, channels, variant, myWnd, windowId]
   );
 
   useKeyDown(() => {
