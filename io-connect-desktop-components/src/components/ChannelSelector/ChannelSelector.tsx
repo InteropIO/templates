@@ -3,13 +3,12 @@ import { IOConnectProvider } from "@interopio/react-hooks";
 import API from "@interopio/desktop";
 import { IOChannelSelector, ThemeProvider } from "@interopio/components-react";
 import "@interopio/components-react/dist/styles/features/channel-selector/styles.css";
-import useChannels from "./useChannels";
 
-const { ChannelSelector } = IOChannelSelector;
+const { ChannelSelector, useIOCDChannels } = IOChannelSelector;
 
 function ChannelSelectorInner() {
   const ref = useRef(null);
-  const { channels, onChannelSelected, variant } = useChannels(ref);
+  const { channels, onChannelSelected, variant } = useIOCDChannels(ref);
 
   return (
     <ChannelSelector
