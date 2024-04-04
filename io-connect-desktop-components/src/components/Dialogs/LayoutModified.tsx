@@ -34,29 +34,26 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
       <ButtonGroup align="right">
         <DialogButton
           id="go-back"
+          text="Cancel"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
-        >
-          Cancel
-        </DialogButton>
+        />
         <DialogButton
           id="discard-changes"
+          text="Discard"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
-        >
-          Discard
-        </DialogButton>
+        />
         <DialogButton
           id="save-changes"
           variant="primary"
+          text="Save"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
-        >
-          Save
-        </DialogButton>
+        />
       </ButtonGroup>
     </DialogFooter>
   );
