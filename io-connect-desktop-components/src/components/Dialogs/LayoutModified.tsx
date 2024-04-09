@@ -33,8 +33,9 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
     <DialogFooter>
       <ButtonGroup align="right">
         <DialogButton
-          id="go-back"
-          text="Cancel"
+          id="save-changes"
+          variant="primary"
+          text="Save"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
@@ -47,9 +48,8 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
           onBlur={handleFocusLoss}
         />
         <DialogButton
-          id="save-changes"
-          variant="primary"
-          text="Save"
+          id="go-back"
+          text="Cancel"
           onClick={handleClick}
           onButtonFocused={handleFocusChanged}
           onBlur={handleFocusLoss}
