@@ -6,13 +6,11 @@ import {
 } from "@interopio/components-react";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import API from "@interopio/desktop";
-import "@interopio/components-react/dist/styles/components/ui/header.css";
-import "@interopio/components-react/dist/styles/components/ui/footer.css";
-import "@interopio/components-react/dist/styles/components/ui/block.css";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
 
 const {
   NotificationsProvider,
+  NotificationsPanelProvider,
   useNotificationsContext,
   Panel,
   useHidePanelOnFocusLost,
@@ -38,7 +36,9 @@ function NotificationsWrapper() {
     >
       <ThemeProvider>
         <NotificationsProvider>
-          <Notifications />
+          <NotificationsPanelProvider>
+            <Notifications />
+          </NotificationsPanelProvider>
         </NotificationsProvider>
       </ThemeProvider>
     </IOConnectProvider>
@@ -52,13 +52,7 @@ function Notifications() {
   useHidePanelOnFocusLost(settings.autoHidePanel);
   useHidePanelOnKeyUp();
 
-  return (
-    <Panel
-      components={{
-        SettingsGeneralPanelAlwaysOnTop: () => <></>,
-      }}
-    />
-  );
+  return <Panel />;
 }
 
 export default NotificationsWrapper;

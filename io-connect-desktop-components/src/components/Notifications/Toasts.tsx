@@ -50,7 +50,7 @@ function Notifications() {
     const panelAppName =
       myApplication.userProperties?.panelApplicationName ??
       "io-connect-notifications-panel-application";
-    const panelApp = io.appManager.application(panelAppName);
+    const panelApp = io.appManager.application(panelAppName) ?? null;
 
     setPanelApplication(panelApp);
   }, [io]);
