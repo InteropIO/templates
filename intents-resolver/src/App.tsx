@@ -2,81 +2,67 @@ import React, { useContext, useEffect, useState } from "react";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
 import { useThemeSync } from "./hooks/useTheme";
-import { Handler } from "./shared/types";
+import { AppIntentHandler, Handlers, InstanceIntentHandler, InstanceIntentHandlers } from "./shared/types";
 import "@interopio/theme";
 import "./App.css";
 import { NO_APP_WINDOW } from "./shared/constants";
-import { Block, Input, List, Panel, Title, Icon } from "@interopio/components-react";
+import { Block, Input, List, Panel, Title, Icon, Button, Dropdown } from "@interopio/components-react";
 
 const App = () => {
     const io = useContext(IOConnectContext);
     (window as any).io = io;
 
-    const [handlers, setHandlers] = useState<Handler[]>([]);
+    const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
     const [description, setDescription] = useState<string>("");
 
     useThemeSync();
 
     useEffect(() => {
-        const setWindowBounds = async (): Promise<void> => {
-            const html = document.querySelector("html");
-
-            if (!html) {
-                return;
-            }
-
-            const height = html.getBoundingClientRect().height;
-
-            if (height > 800) {
-                return;
-            }
-
-            const myWin = io.windows.my();
-
-            if (!myWin) {
-                return;
-            }
-
-            const inBrowser = (window as any).glue42core || (window as any).iobrowser;
-
-            if (inBrowser) {
-                await myWin.moveResize({ height: height + 100, width: 400 });
-
-                return;
-            }
-
-            await myWin.resizeTo(undefined, height + 50);
-        };
-
-        setWindowBounds();
-    }, [handlers]);
-
-    useEffect(() => {
         const subscribeOnHandlerAdded = () => {
-            return io.intents.resolver?.onHandlerAdded((handler) => {
-                setHandlers((handlers) => {
-                    const parsedHandler = {
-                        ...handler,
-                        id: handler.instanceId || handler.applicationName,
-                        title: (handler as any).applicationTitle,
-                    };
+            return io.intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler) => {
+                const isInstance = handler.instanceId;
 
-                    return [...handlers, parsedHandler];
-                });
+                if (isInstance) {
+                    const isFirstOpenInstance = handlers.instances.find(
+                        (inst) => inst.applicationName === handler.applicationName
+                    );
+
+                    if (isFirstOpenInstance) {
+                        setHandlers((handlers) => {
+                            return {
+                                apps: handlers.apps,
+                                instances: [
+                                    ...handlers.instances,
+                                    { ...handler, id: handler.instanceId } as InstanceIntentHandler,
+                                ],
+                            };
+                        });
+
+                        return;
+                    }
+                }
+
+                const handlerWithId = { ...handler, id: isInstance ? handler.instanceId : handler.applicationName };
+
+                const updateValue = handler.instanceId ? "instances" : "apps";
+
+                setHandlers((handlers) => ({ ...handlers, [updateValue]: [...handlers[updateValue], handlerWithId] }));
             });
         };
 
         const subscribeOnHandlerRemoved = () => {
             return io.intents.resolver?.onHandlerRemoved(
                 (removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler) => {
-                    setHandlers((handlers) => {
-                        const removedHandlerWithId = {
-                            ...removedHandler,
-                            id: removedHandler.instanceId ? removedHandler.instanceId : removedHandler.applicationName,
-                        };
+                    const updateValue = removedHandler.instanceId ? "instances" : "apps";
 
-                        return handlers.filter((handler) => handler.id !== removedHandlerWithId.id);
-                    });
+                    setHandlers((handlers) => ({
+                        ...handlers,
+                        [updateValue]: handlers[updateValue].filter((handler) =>
+                            removedHandler.instanceId
+                                ? handler.id !== removedHandler.instanceId
+                                : handler.applicationName !== removedHandler.applicationName
+                        ),
+                    }));
                 }
             );
         };
@@ -150,28 +136,90 @@ const App = () => {
         subscribeOnHandlerAdded();
         subscribeOnHandlerRemoved();
         getTitle();
-    }, []);
+    }, [io]);
+
+    const chooseIntentHandler = (handler: InstanceIntentHandler | AppIntentHandler) => {
+        return io.intents.resolver?.sendResponse(handler);
+    };
+
+    const groupInstances = (handlers: InstanceIntentHandler[]): { [app: string]: InstanceIntentHandler[] } => {
+        let groupedInstances: { [appName: string]: InstanceIntentHandler[] } = {};
+
+        handlers.forEach((handler) => {
+            const app = handler.applicationTitle ?? handler.applicationName;
+
+            if (groupedInstances[app]?.length) {
+                groupedInstances[app].push(handler);
+                return;
+            }
+
+            groupedInstances[app] = [handler];
+        });
+
+        return groupedInstances;
+    };
+
+    const handleInstanceClick = (instHandler: InstanceIntentHandler) => {
+        if (handlers.instances.length > 1) {
+            return;
+        }
+
+        chooseIntentHandler(instHandler);
+    };
 
     return (
-        <>
-            <Panel>
-                <Panel.Header>
-                    <Title text="Intents Resolver" size="large" />
-                </Panel.Header>
-                <Panel.Body>
-                    <Block title={description} />
-                    <Input id="input-prepend" placeholder="Filter apps" iconPrepend="search" />
-                    <List>
-                        <List.ItemSection>Open apps</List.ItemSection>
-                        {handlers.map((handler) => (
-                            <List.Item id={handler.id} prepend={<Icon variant="application" />}>
-                                {handler.applicationTitle ?? handler.applicationName}
-                            </List.Item>
-                        ))}
-                    </List>
-                </Panel.Body>
-            </Panel>
-        </>
+        <Panel>
+            <Panel.Header>
+                <Title text="Intents Resolver" size="large" />
+            </Panel.Header>
+            <Panel.Body>
+                <Block title={description} />
+                <Input id="input-prepend" placeholder="Filter apps" iconPrepend="search" />
+                <List>
+                    {handlers.instances.length ? (
+                        <>
+                            <List.ItemSection>Open apps</List.ItemSection>
+                            {Object.entries(groupInstances(handlers.instances)).map(([app, instances]) => (
+                                <List.Item
+                                    key={app}
+                                    onClick={() => handleInstanceClick(handlers.instances[0])}
+                                    append={
+                                        instances.length > 1 ? (
+                                            <Dropdown variant="outline">
+                                                <Dropdown.Button icon="chevron-down">App Instances</Dropdown.Button>
+                                                <Dropdown.Content>
+                                                <List>
+                                                    {instances.map((handler) => (
+                                                        <List.Item onClick={() => chooseIntentHandler(handler)}>
+                                                            {handler.applicationTitle ?? handler.applicationName ?? handler.instanceId}({handler.instanceId})
+                                                        </List.Item>
+                                                    ))}
+                                                </List>
+                                                </Dropdown.Content>
+                                            </Dropdown>
+                                        ) : null
+                                    }
+                                >
+                                    {app}
+                                </List.Item>
+                            ))}
+                        </>
+                    ) : null}
+                </List>
+                <List>
+                    {handlers.apps.length ? (
+                        <>
+                            <List.ItemSection>All Available Apps</List.ItemSection>
+                            {handlers.apps.map((appHandler: AppIntentHandler) => (
+                                <List.Item key={appHandler.id} onClick={() => chooseIntentHandler(appHandler)}>
+                                    {appHandler.applicationTitle ?? appHandler.applicationName}
+                                </List.Item>
+                            ))}
+                        </>
+                    ) : null}
+                </List>
+            </Panel.Body>
+        </Panel>
     );
 };
 
