@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
 import { useThemeSync } from "./hooks/useTheme";
-import { AppIntentHandler, Handlers, InstanceIntentHandler, InstanceIntentHandlers } from "./shared/types";
+import { AppIntentHandler, Handlers, InstanceIntentHandler } from "./shared/types";
 import "@interopio/theme";
 import "./App.css";
 import { NO_APP_WINDOW } from "./shared/constants";
-import { Block, Input, List, Panel, Title, Icon, Button, Dropdown } from "@interopio/components-react";
+import { Block, Input, List, Panel, Title, Button, Dropdown, Checkbox } from "@interopio/components-react";
 
 const App = () => {
     const io = useContext(IOConnectContext);
@@ -14,6 +14,16 @@ const App = () => {
 
     const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
     const [description, setDescription] = useState<string>("");
+
+    const [callerName, setCallerName] = useState<string>("");
+    const [intentName, setIntentName] = useState<string>("");
+
+    const [chosenIntentHandler, setChosenIntentHandler] = useState<
+        IOConnectBrowser.Intents.ResolverIntentHandler | undefined
+    >(undefined);
+    const [rememberMe, setRememberMe] = useState<boolean>(false);
+
+    const [error, setError] = useState<string>("");
 
     useThemeSync();
 
@@ -70,6 +80,7 @@ const App = () => {
         const getTitle = async () => {
             const { handlersFilter, intent } = (io as any).intents.resolver;
 
+            // TODO: think of callerName and intent/filter for Remember me functionality
             if (handlersFilter || !intent || typeof intent === "string") {
                 const title = (io as any).intents.resolver?.getTitle();
 
@@ -78,6 +89,7 @@ const App = () => {
                 return;
             }
 
+            // TODO: think of callerName and intent/filter for Remember me functionality
             if (typeof intent === "object" && intent.description) {
                 setDescription(intent.description);
 
@@ -100,6 +112,9 @@ const App = () => {
                     }" action from "Platform" is unassigned. Choose an app to perform this action.`
                 );
 
+                setCallerName("Platform");
+                setIntentName(intent.displayName || intent.intent);
+
                 return;
             }
 
@@ -110,18 +125,27 @@ const App = () => {
                     }" action is unassigned. Choose an app to perform this action.`
                 );
 
+                setCallerName(
+                    instance?.application ?? instance?.applicationName ?? instance?.instance ?? NO_APP_WINDOW
+                );
+                setIntentName(intent.displayName || intent.intent);
+
                 return;
             }
 
             const app = io.appManager.application(appName);
 
             if (!app) {
-                console.log("THEEREEE");
                 setDescription(
                     `"${
                         intent.displayName || intent.intent
                     }" action is unassigned. Choose an app to perform this action.`
                 );
+
+                setCallerName(
+                    instance?.application ?? instance?.applicationName ?? instance?.instance ?? NO_APP_WINDOW
+                );
+                setIntentName(intent.displayName || intent.intent);
 
                 return;
             }
@@ -131,6 +155,9 @@ const App = () => {
                     app.title || app.name
                 }" is unassigned. Choose an app to perform this action.`
             );
+
+            setCallerName(app.title ?? app.name);
+            setIntentName(intent.displayName || intent.intent);
         };
 
         subscribeOnHandlerAdded();
@@ -138,8 +165,15 @@ const App = () => {
         getTitle();
     }, [io]);
 
-    const chooseIntentHandler = (handler: InstanceIntentHandler | AppIntentHandler) => {
-        return io.intents.resolver?.sendResponse(handler);
+    const handleActionClick = () => {
+        if (!chosenIntentHandler) {
+            setError(`Choose an app to handle ${intentName}`);
+            return;
+        }
+
+        setError("");
+
+        return io.intents.resolver?.sendResponse(chosenIntentHandler, { rememberChoice: rememberMe });
     };
 
     const groupInstances = (handlers: InstanceIntentHandler[]): { [app: string]: InstanceIntentHandler[] } => {
@@ -159,14 +193,6 @@ const App = () => {
         return groupedInstances;
     };
 
-    const handleInstanceClick = (instHandler: InstanceIntentHandler) => {
-        if (handlers.instances.length > 1) {
-            return;
-        }
-
-        chooseIntentHandler(instHandler);
-    };
-
     return (
         <Panel>
             <Panel.Header>
@@ -175,26 +201,29 @@ const App = () => {
             <Panel.Body>
                 <Block title={description} />
                 <Input id="input-prepend" placeholder="Filter apps" iconPrepend="search" />
-                <List>
+                <List checkIcon="check" variant="single" className="io-list">
                     {handlers.instances.length ? (
                         <>
                             <List.ItemSection>Open apps</List.ItemSection>
                             {Object.entries(groupInstances(handlers.instances)).map(([app, instances]) => (
                                 <List.Item
                                     key={app}
-                                    onClick={() => handleInstanceClick(handlers.instances[0])}
+                                    onClick={() => setChosenIntentHandler(handlers.instances[0])}
                                     append={
                                         instances.length > 1 ? (
                                             <Dropdown variant="outline">
                                                 <Dropdown.Button icon="chevron-down">App Instances</Dropdown.Button>
                                                 <Dropdown.Content>
-                                                <List>
-                                                    {instances.map((handler) => (
-                                                        <List.Item onClick={() => chooseIntentHandler(handler)}>
-                                                            {handler.applicationTitle ?? handler.applicationName ?? handler.instanceId}({handler.instanceId})
-                                                        </List.Item>
-                                                    ))}
-                                                </List>
+                                                    <List>
+                                                        {instances.map((handler) => (
+                                                            <List.Item onClick={() => setChosenIntentHandler(handler)}>
+                                                                {handler.applicationTitle ??
+                                                                    handler.applicationName ??
+                                                                    handler.instanceId}
+                                                                ({handler.instanceId})
+                                                            </List.Item>
+                                                        ))}
+                                                    </List>
                                                 </Dropdown.Content>
                                             </Dropdown>
                                         ) : null
@@ -206,18 +235,24 @@ const App = () => {
                         </>
                     ) : null}
                 </List>
-                <List>
+                <List checkIcon="check" variant="single" className="io-list">
                     {handlers.apps.length ? (
                         <>
                             <List.ItemSection>All Available Apps</List.ItemSection>
                             {handlers.apps.map((appHandler: AppIntentHandler) => (
-                                <List.Item key={appHandler.id} onClick={() => chooseIntentHandler(appHandler)}>
+                                <List.Item key={appHandler.id} onClick={() => setChosenIntentHandler(appHandler)}>
                                     {appHandler.applicationTitle ?? appHandler.applicationName}
                                 </List.Item>
                             ))}
                         </>
                     ) : null}
                 </List>
+                <Checkbox
+                    label={`Always use this app for "${intentName} in "${callerName}"`}
+                    onClick={(e) => setRememberMe((e as any).target.checked)}
+                />
+                {error ? <div style={{ color: "red" }}>{error}</div> : null}
+                <Button variant="primary" text="Action" onClick={handleActionClick} />
             </Panel.Body>
         </Panel>
     );
