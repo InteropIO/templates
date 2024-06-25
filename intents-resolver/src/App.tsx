@@ -4,26 +4,23 @@ import { IOConnectBrowser } from "@interopio/browser";
 import { useThemeSync } from "./hooks/useTheme";
 import { AppIntentHandler, Handlers, InstanceIntentHandler } from "./shared/types";
 import "@interopio/theme";
-import "./App.css";
 import { NO_APP_WINDOW } from "./shared/constants";
-import { Block, Input, List, Panel, Title, Button, Dropdown, Checkbox } from "@interopio/components-react";
+import { Block, Input, List, Panel, Title, Button, Dropdown, Checkbox, Icon } from "@interopio/components-react";
 
 const App = () => {
     const io = useContext(IOConnectContext);
     (window as any).io = io;
 
     const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [filteredHandlers, setFilteredHandlers] = useState<Handlers>({ apps: [], instances: [] });
     const [description, setDescription] = useState<string>("");
-
     const [callerName, setCallerName] = useState<string>("");
     const [intentName, setIntentName] = useState<string>("");
-
     const [chosenIntentHandler, setChosenIntentHandler] = useState<
         IOConnectBrowser.Intents.ResolverIntentHandler | undefined
     >(undefined);
     const [rememberMe, setRememberMe] = useState<boolean>(false);
-
-    const [error, setError] = useState<string>("");
 
     useThemeSync();
 
@@ -31,25 +28,12 @@ const App = () => {
         const subscribeOnHandlerAdded = () => {
             return io.intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler) => {
                 const isInstance = handler.instanceId;
+                const isFirstOpenInstance = handlers.instances.find((inst) => inst.applicationName === handler.applicationName);
 
-                if (isInstance) {
-                    const isFirstOpenInstance = handlers.instances.find(
-                        (inst) => inst.applicationName === handler.applicationName
-                    );
+                if (isInstance && isFirstOpenInstance) { 
+                    setHandlers((handlers) => ({ apps: handlers.apps, instances: [...handlers.instances, { ...handler, id: handler.instanceId } as InstanceIntentHandler]}));
 
-                    if (isFirstOpenInstance) {
-                        setHandlers((handlers) => {
-                            return {
-                                apps: handlers.apps,
-                                instances: [
-                                    ...handlers.instances,
-                                    { ...handler, id: handler.instanceId } as InstanceIntentHandler,
-                                ],
-                            };
-                        });
-
-                        return;
-                    }
+                    return;
                 }
 
                 const handlerWithId = { ...handler, id: isInstance ? handler.instanceId : handler.applicationName };
@@ -165,13 +149,17 @@ const App = () => {
         getTitle();
     }, [io]);
 
+    useEffect(() => {
+        const newFilteredApps = handlers.apps.filter((app) => (app.applicationTitle ?? app.applicationName).toLowerCase().includes(searchQuery.toLowerCase()));
+        const newFilteredInstances = handlers.instances.filter((inst) => (inst.applicationTitle ?? inst.applicationName).toLowerCase().includes(searchQuery.toLowerCase()));
+
+        setFilteredHandlers({ apps: newFilteredApps, instances: newFilteredInstances });
+    }, [searchQuery, handlers]);
+
     const handleActionClick = () => {
         if (!chosenIntentHandler) {
-            setError(`Choose an app to handle ${intentName}`);
-            return;
+            return
         }
-
-        setError("");
 
         return io.intents.resolver?.sendResponse(chosenIntentHandler, { rememberChoice: rememberMe });
     };
@@ -193,6 +181,10 @@ const App = () => {
         return groupedInstances;
     };
 
+    const handleSearchQueryChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        setSearchQuery((e.target as HTMLTextAreaElement).value);
+    };
+
     return (
         <Panel>
             <Panel.Header>
@@ -200,17 +192,23 @@ const App = () => {
             </Panel.Header>
             <Panel.Body>
                 <Block title={description} />
-                <Input id="input-prepend" placeholder="Filter apps" iconPrepend="search" />
-                <List checkIcon="check" variant="single" className="io-list">
-                    {handlers.instances.length ? (
+                <Input
+                    id="input-prepend"
+                    placeholder="Filter apps"
+                    iconPrepend="search"
+                    onKeyDownCapture={handleSearchQueryChange}
+
+                />
+                <List checkIcon="check" variant="single">
+                    {filteredHandlers.instances.length ? (
                         <>
                             <List.ItemSection>Open apps</List.ItemSection>
-                            {Object.entries(groupInstances(handlers.instances)).map(([app, instances]) => (
+                            {Object.entries(groupInstances(filteredHandlers.instances)).map(([app, instances]) => (
                                 <List.Item
                                     key={app}
+                                    prepend={<Icon variant="application"/>}
                                     onClick={() => setChosenIntentHandler(handlers.instances[0])}
-                                    append={
-                                        instances.length > 1 ? (
+                                    append={                                        instances.length > 1 ? (
                                             <Dropdown variant="outline">
                                                 <Dropdown.Button icon="chevron-down">App Instances</Dropdown.Button>
                                                 <Dropdown.Content>
@@ -235,12 +233,15 @@ const App = () => {
                         </>
                     ) : null}
                 </List>
-                <List checkIcon="check" variant="single" className="io-list">
-                    {handlers.apps.length ? (
+                <List checkIcon="check" variant="single">
+                    {filteredHandlers.apps.length ? (
                         <>
                             <List.ItemSection>All Available Apps</List.ItemSection>
-                            {handlers.apps.map((appHandler: AppIntentHandler) => (
-                                <List.Item key={appHandler.id} onClick={() => setChosenIntentHandler(appHandler)}>
+                            {filteredHandlers.apps.map((appHandler: AppIntentHandler) => (
+                                <List.Item
+                                    key={appHandler.id}
+                                    prepend={<Icon variant="application"/>}
+                                    onClick={() => setChosenIntentHandler(appHandler)}>
                                     {appHandler.applicationTitle ?? appHandler.applicationName}
                                 </List.Item>
                             ))}
@@ -251,8 +252,7 @@ const App = () => {
                     label={`Always use this app for "${intentName} in "${callerName}"`}
                     onClick={(e) => setRememberMe((e as any).target.checked)}
                 />
-                {error ? <div style={{ color: "red" }}>{error}</div> : null}
-                <Button variant="primary" text="Action" onClick={handleActionClick} />
+                <Button disabled={!chosenIntentHandler} variant="primary" text="Action" onClick={handleActionClick} />
             </Panel.Body>
         </Panel>
     );
