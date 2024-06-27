@@ -61,10 +61,10 @@ const App = () => {
             );
         };
 
+        // TODO: refactor this spaghetti
         const getTitle = async () => {
             const { handlersFilter, intent } = (io as any).intents.resolver;
 
-            // TODO: think of callerName and intent/filter for Remember me functionality
             if (handlersFilter || !intent || typeof intent === "string") {
                 const title = (io as any).intents.resolver?.getTitle();
 
@@ -73,7 +73,6 @@ const App = () => {
                 return;
             }
 
-            // TODO: think of callerName and intent/filter for Remember me functionality
             if (typeof intent === "object" && intent.description) {
                 setDescription(intent.description);
 
@@ -110,7 +109,7 @@ const App = () => {
                 );
 
                 setCallerName(
-                    instance?.application ?? instance?.applicationName ?? instance?.instance ?? NO_APP_WINDOW
+                    instance?.application || instance?.applicationName || instance?.instance || NO_APP_WINDOW
                 );
                 setIntentName(intent.displayName || intent.intent);
 
@@ -127,7 +126,7 @@ const App = () => {
                 );
 
                 setCallerName(
-                    instance?.application ?? instance?.applicationName ?? instance?.instance ?? NO_APP_WINDOW
+                    instance?.application || instance?.applicationName || instance?.instance || NO_APP_WINDOW
                 );
                 setIntentName(intent.displayName || intent.intent);
 
@@ -140,7 +139,7 @@ const App = () => {
                 }" is unassigned. Choose an app to perform this action.`
             );
 
-            setCallerName(app.title ?? app.name);
+            setCallerName(app.title || app.name);
             setIntentName(intent.displayName || intent.intent);
         };
 
@@ -150,8 +149,8 @@ const App = () => {
     }, [io]);
 
     useEffect(() => {
-        const newFilteredApps = handlers.apps.filter((app) => (app.applicationTitle ?? app.applicationName).toLowerCase().includes(searchQuery.toLowerCase()));
-        const newFilteredInstances = handlers.instances.filter((inst) => (inst.applicationTitle ?? inst.applicationName).toLowerCase().includes(searchQuery.toLowerCase()));
+        const newFilteredApps = handlers.apps.filter((app) => (app.applicationTitle || app.applicationName).toLowerCase().includes(searchQuery.toLowerCase()));
+        const newFilteredInstances = handlers.instances.filter((inst) => (inst.applicationTitle || inst.applicationName).toLowerCase().includes(searchQuery.toLowerCase()));
 
         setFilteredHandlers({ apps: newFilteredApps, instances: newFilteredInstances });
     }, [searchQuery, handlers]);
@@ -168,7 +167,7 @@ const App = () => {
         let groupedInstances: { [appName: string]: InstanceIntentHandler[] } = {};
 
         handlers.forEach((handler) => {
-            const app = handler.applicationTitle ?? handler.applicationName;
+            const app = handler.applicationTitle || handler.applicationName;
 
             if (groupedInstances[app]?.length) {
                 groupedInstances[app].push(handler);
@@ -197,7 +196,8 @@ const App = () => {
                     placeholder="Filter apps"
                     iconPrepend="search"
                     onKeyDownCapture={handleSearchQueryChange}
-
+                    iconAppend="close"
+                    iconAppendOnClick={() => setSearchQuery("")}
                 />
                 <List checkIcon="check" variant="single">
                     {filteredHandlers.instances.length ? (
@@ -207,6 +207,7 @@ const App = () => {
                                 <List.Item
                                     key={app}
                                     prepend={<Icon variant="application"/>}
+                                    isSelected={chosenIntentHandler?.instanceId === handlers.instances[0].instanceId}
                                     onClick={() => setChosenIntentHandler(handlers.instances[0])}
                                     append={                                        instances.length > 1 ? (
                                             <Dropdown variant="outline">
@@ -214,9 +215,9 @@ const App = () => {
                                                 <Dropdown.Content>
                                                     <List>
                                                         {instances.map((handler) => (
-                                                            <List.Item onClick={() => setChosenIntentHandler(handler)}>
-                                                                {handler.applicationTitle ??
-                                                                    handler.applicationName ??
+                                                            <List.Item isSelected={chosenIntentHandler?.instanceId === handler.instanceId} onClick={() => setChosenIntentHandler(handler)}>
+                                                                {handler.applicationTitle ||
+                                                                    handler.applicationName ||
                                                                     handler.instanceId}
                                                                 ({handler.instanceId})
                                                             </List.Item>
@@ -241,8 +242,9 @@ const App = () => {
                                 <List.Item
                                     key={appHandler.id}
                                     prepend={<Icon variant="application"/>}
+                                    isSelected={chosenIntentHandler?.applicationName === appHandler.applicationName}
                                     onClick={() => setChosenIntentHandler(appHandler)}>
-                                    {appHandler.applicationTitle ?? appHandler.applicationName}
+                                    {appHandler.applicationTitle || appHandler.applicationName}
                                 </List.Item>
                             ))}
                         </>
