@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
+import "@interopio/theme";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
 import { useThemeSync } from "./hooks/useTheme";
-import { AppIntentHandler, Handlers, InstanceIntentHandler } from "./shared/types";
-import "@interopio/theme";
+import { Handlers, InstanceIntentHandler, ListProps } from "./shared/types";
 import { NO_APP_WINDOW } from "./shared/constants";
-import { Block, Input, List, Panel, Title, Button, Dropdown, Checkbox, Icon } from "@interopio/components-react";
+import { Block, Panel, Title, Button, Checkbox } from "@interopio/components-react";
+import Input from "./components/Input/Input";
+import InstancesList from "./components/InstancesList/InstancesList";
+import AppsList from "./components/AppsList/AppsList";
 
 const App = () => {
     const io = useContext(IOConnectContext);
@@ -18,13 +21,13 @@ const App = () => {
     const [callerName, setCallerName] = useState<string>("");
     const [intentName, setIntentName] = useState<string>("");
     const [chosenIntentHandler, setChosenIntentHandler] = useState<IOConnectBrowser.Intents.ResolverIntentHandler | undefined>(undefined);
-    const [rememberMe, setRememberMe] = useState<boolean>(false);
+    const [rememberChoice, setRememberChoice] = useState<boolean>(false);
 
     useThemeSync();
 
     useEffect(() => {
         const subscribeOnHandlerAdded = () => {
-            return io.intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler) => {
+            return io.intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler) => {                
                 const isInstance = handler.instanceId;
                 const isFirstOpenInstance = handlers.instances.find((inst) => inst.applicationName === handler.applicationName);
 
@@ -137,48 +140,16 @@ const App = () => {
             return;
         }
 
-        return io.intents.resolver?.sendResponse(chosenIntentHandler, { rememberChoice: rememberMe });
+        // TODO: add `intent` when filter handlers is passed
+        return io.intents.resolver?.sendResponse({ intent: intentName, handler: chosenIntentHandler, rememberChoice });
     };
 
-    const handleSelectHandlerClick = (handler: InstanceIntentHandler | AppIntentHandler) => {
-        if (!chosenIntentHandler) {
-            setChosenIntentHandler(handler);
-            return;
-        }
-
-        const instanceHandlerId = (handler as InstanceIntentHandler).instanceId;
-
-        if (
-            (instanceHandlerId && instanceHandlerId === chosenIntentHandler.instanceId) ||
-            (!instanceHandlerId && !chosenIntentHandler.instanceId && handler.applicationName === chosenIntentHandler.applicationName)
-        ) {
-            setChosenIntentHandler(undefined);
-
-            return;
-        }
-
-        setChosenIntentHandler(handler);
-    };
-
-    const groupInstances = (handlers: InstanceIntentHandler[]): { [app: string]: InstanceIntentHandler[] } => {
-        let groupedInstances: { [appName: string]: InstanceIntentHandler[] } = {};
-
-        handlers.forEach((handler) => {
-            const app = handler.applicationTitle || handler.applicationName;
-
-            if (groupedInstances[app]?.length) {
-                groupedInstances[app].push(handler);
-                return;
-            }
-
-            groupedInstances[app] = [handler];
-        });
-
-        return groupedInstances;
-    };
-
-    const handleSearchQueryChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleSearchQueryChange = (e) => {
         setSearchQuery((e.target as HTMLTextAreaElement).value);
+    };
+
+    const getListProps = (): ListProps => {
+        return { filteredHandlers, chosenIntentHandler, setChosenIntentHandler };
     };
 
     return (
@@ -188,68 +159,10 @@ const App = () => {
             </Panel.Header>
             <Panel.Body>
                 <Block title={description} />
-                <Input
-                    id="input-prepend"
-                    placeholder="Filter apps"
-                    iconPrepend="search"
-                    onKeyDownCapture={handleSearchQueryChange}
-                    iconAppend="close"
-                    iconAppendOnClick={() => setSearchQuery("")}
-                />
-                <List checkIcon="check" variant="single">
-                    {filteredHandlers.instances.length ? (
-                        <>
-                            <List.ItemSection>Open apps</List.ItemSection>
-                            {Object.entries(groupInstances(filteredHandlers.instances)).map(([app, instances]) => (
-                                <List.Item
-                                    key={app}
-                                    prepend={<Icon variant="application" />}
-                                    onClick={() => {
-                                        if (instances.length > 1) {
-                                            return;
-                                        }
-                                        handleSelectHandlerClick(instances[0]);
-                                    }}
-                                    isSelected={instances.length === 1 && chosenIntentHandler?.instanceId === instances[0].instanceId}
-                                    append={
-                                        instances.length > 1 ? (
-                                            <Dropdown variant="outline">
-                                                <Dropdown.Button icon="chevron-down">App Instances</Dropdown.Button>
-                                                <Dropdown.Content>
-                                                    <List checkIcon="check" variant="single">
-                                                        {instances.map((handler) => (
-                                                            <List.Item
-                                                                onClick={() => handleSelectHandlerClick(handler)}
-                                                                isSelected={chosenIntentHandler?.instanceId === handler.instanceId}
-                                                            >
-                                                                {handler.applicationTitle || handler.applicationName || handler.instanceId}({handler.instanceId})
-                                                            </List.Item>
-                                                        ))}
-                                                    </List>
-                                                </Dropdown.Content>
-                                            </Dropdown>
-                                        ) : null
-                                    }
-                                >
-                                    {app}
-                                </List.Item>
-                            ))}
-                        </>
-                    ) : null}
-                </List>
-                <List checkIcon="check" variant="single">
-                    {filteredHandlers.apps.length ? (
-                        <>
-                            <List.ItemSection>All Available Apps</List.ItemSection>
-                            {filteredHandlers.apps.map((appHandler: AppIntentHandler) => (
-                                <List.Item key={appHandler.id} prepend={<Icon variant="application" />} onClick={() => setChosenIntentHandler(appHandler)}>
-                                    {appHandler.applicationTitle || appHandler.applicationName}
-                                </List.Item>
-                            ))}
-                        </>
-                    ) : null}
-                </List>
-                <Checkbox label={`Always use this app for "${intentName} in "${callerName}"`} onClick={(e) => setRememberMe((e as any).target.checked)} />
+                <Input searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchQueryChange={handleSearchQueryChange} />
+                <InstancesList {...getListProps()} />
+                <AppsList {...getListProps()} />
+                <Checkbox label={`Always use this app for "${intentName} in "${callerName}"`} onClick={(e) => setRememberChoice((e as any).target.checked)} />
                 <Button disabled={!chosenIntentHandler} variant="primary" text="Action" onClick={handleActionClick} />
             </Panel.Body>
         </Panel>
