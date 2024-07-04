@@ -1,81 +1,76 @@
 import React, { useContext, useEffect, useState } from "react";
 import "@interopio/theme";
+import { Block, Button, List, Panel, Title } from "@interopio/components-react";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
-import { useThemeSync } from "./hooks/useTheme";
-import { Handlers, InstanceIntentHandler, ListProps } from "./shared/types";
+import HandlersPanel from "./components/HandlersPanel/HandlersPanel";
 import { NO_APP_WINDOW } from "./shared/constants";
-import { Block, Panel, Title, Button, Checkbox } from "@interopio/components-react";
-import Input from "./components/Input/Input";
-import InstancesList from "./components/InstancesList/InstancesList";
-import AppsList from "./components/AppsList/AppsList";
+import { useThemeSync } from "./hooks/useTheme";
 
 const App = () => {
     const io = useContext(IOConnectContext);
     (window as any).io = io;
 
-    const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
-    const [searchQuery, setSearchQuery] = useState<string>("");
-    const [filteredHandlers, setFilteredHandlers] = useState<Handlers>({ apps: [], instances: [] });
     const [description, setDescription] = useState<string>("");
+    const [methodsForFilter, setMethodsForFilter] = useState<IOConnectBrowser.Intents.IntentInfo[]>([]);
+    const [chosenIntentName, setChosenIntentName] = useState<string>("");
     const [callerName, setCallerName] = useState<string>("");
-    const [intentName, setIntentName] = useState<string>("");
-    const [chosenIntentHandler, setChosenIntentHandler] = useState<IOConnectBrowser.Intents.ResolverIntentHandler | undefined>(undefined);
-    const [rememberChoice, setRememberChoice] = useState<boolean>(false);
 
     useThemeSync();
 
     useEffect(() => {
-        const subscribeOnHandlerAdded = () => {
-            return io.intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler) => {                
-                const isInstance = handler.instanceId;
-                const isFirstOpenInstance = handlers.instances.find((inst) => inst.applicationName === handler.applicationName);
+        const getTitle = ({ contextTypes, resultType, applicationNames }: IOConnectBrowser.Intents.HandlerFilter) => {
+            const title: string | undefined = (io as any).intents.resolver?.getTitle();
 
-                if (isInstance && isFirstOpenInstance) {
-                    setHandlers((handlers) => ({
-                        apps: handlers.apps,
-                        instances: [...handlers.instances, { ...handler, id: handler.instanceId } as InstanceIntentHandler],
-                    }));
-
-                    return;
-                }
-
-                const handlerWithId = { ...handler, id: isInstance ? handler.instanceId : handler.applicationName };
-
-                const updateValue = handler.instanceId ? "instances" : "apps";
-
-                setHandlers((handlers) => ({ ...handlers, [updateValue]: [...handlers[updateValue], handlerWithId] }));
-            });
-        };
-
-        const subscribeOnHandlerRemoved = () => {
-            return io.intents.resolver?.onHandlerRemoved((removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler) => {
-                const updateValue = removedHandler.instanceId ? "instances" : "apps";
-
-                setHandlers((handlers) => ({
-                    ...handlers,
-                    [updateValue]: handlers[updateValue].filter((handler) =>
-                        removedHandler.instanceId ? handler.id !== removedHandler.instanceId : handler.applicationName !== removedHandler.applicationName
-                    ),
-                }));
-            });
-        };
-
-        // TODO: refactor this spaghetti
-        const getTitle = async () => {
-            const { handlersFilter, intent } = (io as any).intents.resolver;
-
-            if (handlersFilter || !intent || typeof intent === "string") {
-                const title = (io as any).intents.resolver?.getTitle();
-
+            if (title) {
                 setDescription(title);
 
                 return;
             }
 
-            if (typeof intent === "object" && intent.description) {
-                setDescription(intent.description);
+            const contextTypesString = contextTypes?.length ? `${contextTypes.join(", ")} contexts` : "";
+            const applicationNamesString = applicationNames?.length ? `${applicationNames.join(", ")} apps` : "";
 
+            const description = `Choose action for ${contextTypesString}${contextTypesString ? "and" : ""}${resultType ? `'${resultType}' result type` : ""}${
+                resultType && applicationNamesString ? "and" : ""
+            }${applicationNamesString ? `'${applicationNamesString}' applications` : ""}`;
+
+            setDescription(description);
+        };
+
+        const retrieveMethodsForFilter = async () => {
+            const handlerFilter: IOConnectBrowser.Intents.HandlerFilter = (io as any).intents.resolver.handlerFilter;
+
+            if (!handlerFilter) {
+                return;
+            }
+
+            getTitle(handlerFilter);
+
+            const unOnIntentAdded = (io as any).intents.resolver.onIntentAdded((intent: IOConnectBrowser.Intents.IntentInfo) => {
+                setMethodsForFilter((methods) => methods.concat([intent]));
+            });
+
+            const unOnIntentRemoved = (io as any).intents.resolver.onIntentRemoved((intent: IOConnectBrowser.Intents.IntentInfo) => {
+                setMethodsForFilter((methods) =>
+                    methods.filter((method: IOConnectBrowser.Intents.IntentInfo) => (method.displayName || method.intent) !== (intent.displayName || intent.intent))
+                );
+            });
+        };
+
+        retrieveMethodsForFilter();
+    }, [io]);
+
+    useEffect(() => {
+        if ((io as any).intents.resolver.handlerFilter && (!chosenIntentName || methodsForFilter.length)) {
+            return;
+        }
+
+        const setNewDescription = async () => {
+            const { handlersFilter, intent } = (io as any).intents.resolver;
+
+            if (handlersFilter && handlersFilter.intent) {
+                setDescription(`"${chosenIntentName || handlersFilter.intent}" action is unassigned. Choose an app to perform this action.`);
                 return;
             }
 
@@ -89,67 +84,39 @@ const App = () => {
             const inBrowser = (window as any).iobrowser || (window as any).glue42core;
 
             if (inBrowser && instance?.application === "Platform") {
-                setDescription(`"${intent.displayName || intent.intent}" action from "Platform" is unassigned. Choose an app to perform this action.`);
-
-                setCallerName("Platform");
-                setIntentName(intent.displayName || intent.intent);
-
+                setDescription(`"${chosenIntentName || intent.displayName || intent.intent}" action from "Platform" is unassigned. Choose an app to perform this action.`);
+                setCallerName("Platform")
                 return;
             }
 
             if (!appName || (inDesktop && appName === NO_APP_WINDOW)) {
-                setDescription(`"${intent.displayName || intent.intent}" action is unassigned. Choose an app to perform this action.`);
-
+                setDescription(`"${chosenIntentName || intent.displayName || intent.intent}" action is unassigned. Choose an app to perform this action.`);
                 setCallerName(instance?.application || instance?.applicationName || instance?.instance || NO_APP_WINDOW);
-                setIntentName(intent.displayName || intent.intent);
-
                 return;
             }
 
             const app = io.appManager.application(appName);
 
             if (!app) {
-                setDescription(`"${intent.displayName || intent.intent}" action is unassigned. Choose an app to perform this action.`);
-
+                setDescription(`"${chosenIntentName || intent.displayName || intent.intent}" action is unassigned. Choose an app to perform this action.`);
                 setCallerName(instance?.application || instance?.applicationName || instance?.instance || NO_APP_WINDOW);
-                setIntentName(intent.displayName || intent.intent);
-
                 return;
             }
 
-            setDescription(`"${intent.displayName || intent.intent}" action from "${app.title || app.name}" is unassigned. Choose an app to perform this action.`);
-
+            setDescription(`"${chosenIntentName || intent.displayName || intent.intent}" action from "${app.title || app.name}" is unassigned. Choose an app to perform this action.`);
             setCallerName(app.title || app.name);
-            setIntentName(intent.displayName || intent.intent);
         };
 
-        subscribeOnHandlerAdded();
-        subscribeOnHandlerRemoved();
-        getTitle();
-    }, [io]);
+        setNewDescription();
+    }, [chosenIntentName, methodsForFilter]);
 
-    useEffect(() => {
-        const newFilteredApps = handlers.apps.filter((app) => (app.applicationTitle || app.applicationName).toLowerCase().includes(searchQuery.toLowerCase()));
-        const newFilteredInstances = handlers.instances.filter((inst) => (inst.applicationTitle || inst.applicationName).toLowerCase().includes(searchQuery.toLowerCase()));
-
-        setFilteredHandlers({ apps: newFilteredApps, instances: newFilteredInstances });
-    }, [searchQuery, handlers]);
-
-    const handleActionClick = () => {
-        if (!chosenIntentHandler) {
+    const handleSelectIntentClick = (name: string) => {
+        if (!chosenIntentName) {
+            setChosenIntentName(name);
             return;
         }
 
-        // TODO: add `intent` when filter handlers is passed
-        return io.intents.resolver?.sendResponse({ intent: intentName, handler: chosenIntentHandler, rememberChoice });
-    };
-
-    const handleSearchQueryChange = (e) => {
-        setSearchQuery((e.target as HTMLTextAreaElement).value);
-    };
-
-    const getListProps = (): ListProps => {
-        return { filteredHandlers, chosenIntentHandler, setChosenIntentHandler };
+        setChosenIntentName((currentIntentName) => (currentIntentName === name ? "" : name));
     };
 
     return (
@@ -159,11 +126,20 @@ const App = () => {
             </Panel.Header>
             <Panel.Body>
                 <Block title={description} />
-                <Input searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchQueryChange={handleSearchQueryChange} />
-                <InstancesList {...getListProps()} />
-                <AppsList {...getListProps()} />
-                <Checkbox label={`Always use this app for "${intentName} in "${callerName}"`} onClick={(e) => setRememberChoice((e as any).target.checked)} />
-                <Button disabled={!chosenIntentHandler} variant="primary" text="Action" onClick={handleActionClick} />
+                {methodsForFilter.length ? (
+                    <>
+                        <List checkIcon="check" variant="single">
+                            {Array.from(new Set(methodsForFilter.map((method) => method.intent))).map((methodName) => (
+                                <List.Item key={methodName} onClick={() => handleSelectIntentClick(methodName)} isSelected={methodName === chosenIntentName}>
+                                    {methodName}
+                                </List.Item>
+                            ))}
+                        </List>
+                        <Button disabled={!chosenIntentName} variant="primary" text="Next" onClick={() => setMethodsForFilter([])} />
+                    </>
+                ) : (
+                    <HandlersPanel intentName={chosenIntentName} callerName={callerName} />
+                )}
             </Panel.Body>
         </Panel>
     );

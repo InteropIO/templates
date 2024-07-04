@@ -21,5 +21,14 @@ export interface Handlers {
 export interface ListProps {
     filteredHandlers: Handlers;
     chosenIntentHandler: IOConnectBrowser.Intents.ResolverIntentHandler | undefined;
-    setChosenIntentHandler: React.Dispatch<React.SetStateAction<IOConnectBrowser.Intents.ResolverIntentHandler | undefined>>;
+    handleSelectHandlerClick: (handler: InstanceIntentHandler | AppIntentHandler) => void;
+}
+
+export interface UnsubscribeFunction {
+    (): void;
+}
+
+export interface IntentInfo extends IOConnectBrowser.Intents.IntentInfo {
+    name: string;
+    contexts?: string[];
 }

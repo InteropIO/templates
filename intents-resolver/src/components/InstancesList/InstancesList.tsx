@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Dropdown, Icon, List } from "@interopio/components-react";
-import { AppIntentHandler, InstanceIntentHandler, ListProps } from "../../shared/types";
+import { InstanceIntentHandler, ListProps } from "../../shared/types";
 import { IOConnectContext } from "@interopio/react-hooks";
 
-const InstancesList = ({ filteredHandlers, chosenIntentHandler, setChosenIntentHandler }: ListProps) => {
+const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHandlerClick }: ListProps) => {
     const io = useContext(IOConnectContext);
 
     const handleListItemClick = (instances: InstanceIntentHandler[]) => {
@@ -12,26 +12,6 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, setChosenIntentH
         }
 
         handleSelectHandlerClick(instances[0]);
-    };
-
-    const handleSelectHandlerClick = (handler: InstanceIntentHandler | AppIntentHandler) => {
-        if (!chosenIntentHandler) {
-            setChosenIntentHandler(handler);
-            return;
-        }
-
-        const instanceHandlerId = (handler as InstanceIntentHandler).instanceId;
-
-        if (
-            (instanceHandlerId && instanceHandlerId === chosenIntentHandler.instanceId) ||
-            (!instanceHandlerId && !chosenIntentHandler.instanceId && handler.applicationName === chosenIntentHandler.applicationName)
-        ) {
-            setChosenIntentHandler(undefined);
-
-            return;
-        }
-
-        setChosenIntentHandler(handler);
     };
 
     const groupInstances = (handlers: InstanceIntentHandler[]): { [app: string]: InstanceIntentHandler[] } => {
@@ -60,7 +40,7 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, setChosenIntentH
         }
 
         await win.focus();
-    }
+    };
 
     return (
         <List checkIcon="check" variant="single">
