@@ -3,6 +3,7 @@ import Input from "../Input/Input";
 import { AppIntentHandler, Handlers, InstanceIntentHandler, ListProps } from "../../shared/types";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
+import { IOConnectDesktop } from "@interopio/desktop";
 import InstancesList from "../InstancesList/InstancesList";
 import AppsList from "../AppsList/AppsList";
 import { Button, Checkbox } from "@interopio/components-react";
@@ -14,12 +15,16 @@ const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
     const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredHandlers, setFilteredHandlers] = useState<Handlers>({ apps: [], instances: [] });
-    const [chosenIntentHandler, setChosenIntentHandler] = useState<IOConnectBrowser.Intents.ResolverIntentHandler | undefined>(undefined);
+    const [chosenIntentHandler, setChosenIntentHandler] = useState<IOConnectBrowser.Intents.ResolverIntentHandler | IOConnectDesktop.Intents.ResolverIntentHandler | undefined>(undefined);
     const [rememberChoice, setRememberChoice] = useState<boolean>(false);
 
     useEffect(() => {
         const subscribeOnHandlerAdded = () => {
-            return io.intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler) => {                
+            return (io as any).intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo): void => {
+                if (intentName && intentName !== intent.intent) {
+                    return;
+                }
+                
                 const isInstance = handler.instanceId;
                 const isFirstOpenInstance = handlers.instances.find((inst) => inst.applicationName === handler.applicationName);
 
@@ -41,7 +46,11 @@ const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
         };
 
         const subscribeOnHandlerRemoved = () => {
-            return io.intents.resolver?.onHandlerRemoved((removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler) => {
+            return (io as any).intents.resolver?.onHandlerRemoved((removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo) => {
+                if (intentName && intentName !== intent.intent) {
+                    return;
+                }
+                
                 const updateValue = removedHandler.instanceId ? "instances" : "apps";
 
                 setHandlers((handlers) => ({
@@ -86,7 +95,11 @@ const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
         }
 
         // TODO: add `intent` when filter handlers is passed
-        return io.intents.resolver?.sendResponse({ intent: intentName, handler: chosenIntentHandler, rememberChoice });
+        return io.intents.resolver?.sendResponse({
+            intent: intentName || io.intents.resolver.handlerFilter?.intent || typeof (io as any).intents.resolver.intent === "string" ? (io as any).intents.resolver.intent : (io as any).intents.resolver.intent.intent,
+            handler: chosenIntentHandler,
+            rememberChoice
+        });
     };
 
     const handleSearchQueryChange = (e) => {
@@ -94,7 +107,7 @@ const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
     };
 
     const getListProps = (): ListProps => {
-        return { filteredHandlers, chosenIntentHandler, handleSelectHandlerClick };
+        return { intentName, filteredHandlers, chosenIntentHandler, handleSelectHandlerClick };
     };
 
     return (

@@ -19,6 +19,7 @@ export interface Handlers {
 }
 
 export interface ListProps {
+    intentName?: string;
     filteredHandlers: Handlers;
     chosenIntentHandler: IOConnectBrowser.Intents.ResolverIntentHandler | undefined;
     handleSelectHandlerClick: (handler: InstanceIntentHandler | AppIntentHandler) => void;
