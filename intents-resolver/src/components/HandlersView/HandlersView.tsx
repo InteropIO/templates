@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import Input from "../Input/Input";
+import Search from "../Search/Search";
 import { AppIntentHandler, Handlers, InstanceIntentHandler, ListProps } from "../../shared/types";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
 import { IOConnectDesktop } from "@interopio/desktop";
 import InstancesList from "../InstancesList/InstancesList";
 import AppsList from "../AppsList/AppsList";
-import { Button, Checkbox } from "@interopio/components-react";
-import { HandlersPanelProps } from "./types";
+import { Button, ButtonGroup, Checkbox } from "@interopio/components-react";
+import { HandlersViewProps } from "./types";
 
-const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
+const HandlersView = ({ callerName, intentName, setShowIntentList }: HandlersViewProps) => {
     const io = useContext(IOConnectContext);
 
     const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
@@ -19,8 +19,11 @@ const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
     const [rememberChoice, setRememberChoice] = useState<boolean>(false);
 
     useEffect(() => {
+        let unsubOnHandlerAdded: () => void;
+        let unsubOnHandlerRemoved: () => void;
+
         const subscribeOnHandlerAdded = () => {
-            return (io as any).intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo): void => {
+            unsubOnHandlerAdded = (io as any).intents.resolver?.onHandlerAdded((handler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo): void => {
                 if (intentName && intentName !== intent.intent) {
                     return;
                 }
@@ -46,7 +49,7 @@ const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
         };
 
         const subscribeOnHandlerRemoved = () => {
-            return (io as any).intents.resolver?.onHandlerRemoved((removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo) => {
+            unsubOnHandlerRemoved = (io as any).intents.resolver?.onHandlerRemoved((removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo) => {
                 if (intentName && intentName !== intent.intent) {
                     return;
                 }
@@ -64,7 +67,11 @@ const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
 
         subscribeOnHandlerAdded();
         subscribeOnHandlerRemoved();
-        // getTitle();
+
+        return () => {
+            unsubOnHandlerAdded();
+            unsubOnHandlerRemoved();
+        };
     }, [io]);
 
     useEffect(() => {
@@ -112,13 +119,16 @@ const HandlersPanel = ({ callerName, intentName }: HandlersPanelProps) => {
 
     return (
         <>
-            <Input searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchQueryChange={handleSearchQueryChange} />
+            <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchQueryChange={handleSearchQueryChange} />
             <InstancesList {...getListProps()} />
             <AppsList {...getListProps()} />
-            <Checkbox label={`Always use this app for "${intentName} in "${callerName}"`} onClick={(e) => setRememberChoice((e as any).target.checked)} />
-            <Button disabled={!chosenIntentHandler} variant="primary" text="Action" onClick={handleActionClick} />
+            <Checkbox label={`Always use this app for "${intentName}" in "${callerName}"`} onClick={(e) => setRememberChoice((e as any).target.checked)} />
+            <ButtonGroup align="right">
+                {io.intents.resolver?.handlerFilter ? (<Button variant="outline" text="Back" onClick={() => setShowIntentList(true)} />) : null}
+                <Button disabled={!chosenIntentHandler} variant="primary" text="Action" onClick={handleActionClick} />
+            </ButtonGroup>
         </>
     );
 };
 
-export default HandlersPanel;
+export default HandlersView;

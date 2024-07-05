@@ -1,8 +1,8 @@
 import React, { CSSProperties } from "react";
-import { ButtonIcon, Input as IoInput } from "@interopio/components-react";
-import { InputProps } from "./types";
+import { ButtonIcon, Input } from "@interopio/components-react";
+import { SearchProps } from "./types";
 
-const Input = ({ searchQuery, setSearchQuery, handleSearchQueryChange }: InputProps) => {
+const Search = ({ searchQuery, setSearchQuery, handleSearchQueryChange }: SearchProps) => {
     const styles = {
         wrapper: {
             position: "relative",
@@ -23,7 +23,7 @@ const Input = ({ searchQuery, setSearchQuery, handleSearchQueryChange }: InputPr
     return (
         <div className="column-wrapper" style={{ position: "relative" }}>
             <ButtonIcon icon="search" size="24" style={styles.btnIcon as CSSProperties} />
-            <IoInput placeholder="Filter apps" value={searchQuery} onChange={handleSearchQueryChange} style={styles.input as CSSProperties} />
+            <Input placeholder="Filter apps" value={searchQuery} onChange={handleSearchQueryChange} style={styles.input as CSSProperties} />
             <ButtonIcon
                 icon="close"
                 size="24"
@@ -37,4 +37,4 @@ const Input = ({ searchQuery, setSearchQuery, handleSearchQueryChange }: InputPr
     );
 };
 
-export default Input;
+export default Search;
