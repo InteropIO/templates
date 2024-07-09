@@ -101,7 +101,6 @@ const HandlersView = ({ callerName, intentName, setShowIntentList }: HandlersVie
             return;
         }
 
-        // TODO: add `intent` when filter handlers is passed
         return io.intents.resolver?.sendResponse({
             intent: intentName || io.intents.resolver.handlerFilter?.intent || typeof (io as any).intents.resolver.intent === "string" ? (io as any).intents.resolver.intent : (io as any).intents.resolver.intent.intent,
             handler: chosenIntentHandler,
@@ -122,7 +121,7 @@ const HandlersView = ({ callerName, intentName, setShowIntentList }: HandlersVie
             <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchQueryChange={handleSearchQueryChange} />
             <InstancesList {...getListProps()} />
             <AppsList {...getListProps()} />
-            <Checkbox label={`Always use this app for "${intentName}" in "${callerName}"`} onClick={(e) => setRememberChoice((e as any).target.checked)} />
+            <Checkbox label={`Always use this app for "${intentName || typeof io.intents.resolver?.intent === "string" ? io.intents.resolver.intent : io.intents.resolver?.intent?.intent}" in "${callerName}"`} onClick={(e) => setRememberChoice((e as any).target.checked)} />
             <ButtonGroup align="right">
                 {io.intents.resolver?.handlerFilter ? (<Button variant="outline" text="Back" onClick={() => setShowIntentList(true)} />) : null}
                 <Button disabled={!chosenIntentHandler} variant="primary" text="Action" onClick={handleActionClick} />

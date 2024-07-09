@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Dropdown, Icon, List } from "@interopio/components-react";
+import { Dropdown, Icon, ImageIcon, List } from "@interopio/components-react";
 import { InstanceIntentHandler, ListProps } from "../../shared/types";
 import { IOConnectContext } from "@interopio/react-hooks";
 
@@ -50,7 +50,7 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHand
                     {Object.entries(groupInstances(filteredHandlers.instances)).map(([app, instances]) => (
                         <List.Item
                             key={app}
-                            prepend={<Icon variant="application" />}
+                            prepend={instances[0].applicationIcon ? <ImageIcon src={instances[0].applicationIcon} alt="" /> : <Icon variant="application" />}
                             onClick={() => handleListItemClick(instances)}
                             isSelected={instances.length === 1 && chosenIntentHandler?.instanceId === instances[0].instanceId}
                             append={
@@ -64,7 +64,7 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHand
                                                         key={handler.instanceId}
                                                         onClick={() => handleSelectHandlerClick(handler)}
                                                         isSelected={chosenIntentHandler?.instanceId === handler.instanceId}
-                                                        // onMouseEnter={() => handleHover(handler)}
+                                                        onMouseEnter={() => handleHover(handler)}
                                                     >
                                                         {handler.applicationTitle || handler.applicationName || handler.instanceId}({handler.instanceId})
                                                     </List.Item>

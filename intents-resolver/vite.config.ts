@@ -1,9 +1,11 @@
-import * as reactPlugin from 'vite-plugin-react'
-import type { UserConfig } from 'vite'
+import reactPlugin from '@vitejs/plugin-react'
+import type { UserConfig } from 'vite';
 
 const config: UserConfig = {
-  jsx: 'react',
-  plugins: [reactPlugin]
+  plugins: [reactPlugin()],
+  optimizeDeps: {
+    include: ['react/jsx-runtime']
+  }
 }
 
 export default config

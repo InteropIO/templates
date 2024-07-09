@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, List } from "@interopio/components-react";
+import { Icon, List, ImageIcon } from "@interopio/components-react";
 import { AppIntentHandler, ListProps } from "../../shared/types";
 
 const AppsList = ({ filteredHandlers, chosenIntentHandler, handleSelectHandlerClick }: ListProps) => {
@@ -11,7 +11,7 @@ const AppsList = ({ filteredHandlers, chosenIntentHandler, handleSelectHandlerCl
                     {filteredHandlers.apps.map((appHandler: AppIntentHandler) => (
                         <List.Item
                             key={appHandler.id}
-                            prepend={<Icon variant="application" />}
+                            prepend={appHandler.applicationIcon ? <ImageIcon src={appHandler.applicationIcon} alt="" /> : <Icon variant="application" />}
                             onClick={() => handleSelectHandlerClick(appHandler)}
                             isSelected={!chosenIntentHandler?.instanceId && chosenIntentHandler?.applicationName === appHandler.applicationName}
                         >
