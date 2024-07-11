@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Dropdown, Icon, ImageIcon, List } from "@interopio/components-react";
 import { InstanceIntentHandler, ListProps } from "../../shared/types";
 import { IOConnectContext } from "@interopio/react-hooks";
+import { IOConnectBrowser } from "@interopio/browser";
 
 const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHandlerClick }: ListProps) => {
     const io = useContext(IOConnectContext);
@@ -14,10 +15,10 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHand
         handleSelectHandlerClick(instances[0]);
     };
 
-    const groupInstances = (handlers: InstanceIntentHandler[]): { [app: string]: InstanceIntentHandler[] } => {
+    const groupInstances = (handlers: { intent: IOConnectBrowser.Intents.IntentInfo, handler: InstanceIntentHandler}[]): { [app: string]: InstanceIntentHandler[] } => {
         let groupedInstances: { [appName: string]: InstanceIntentHandler[] } = {};
 
-        handlers.forEach((handler) => {
+        handlers.forEach(({ handler }) => {
             const app = handler.applicationTitle || handler.applicationName;
 
             if (groupedInstances[app]?.length) {
@@ -31,7 +32,7 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHand
         return groupedInstances;
     };
 
-    // TODO: handle focus in io.CB and io.CD
+    // TODO: focusing not working in browser?! 
     const handleHover = async (handler: InstanceIntentHandler) => {
         const win = io.windows.findById(handler.instanceId);
 
@@ -53,6 +54,13 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHand
                             prepend={instances[0].applicationIcon ? <ImageIcon src={instances[0].applicationIcon} alt="" /> : <Icon variant="application" />}
                             onClick={() => handleListItemClick(instances)}
                             isSelected={instances.length === 1 && chosenIntentHandler?.instanceId === instances[0].instanceId}
+                            onMouseEnter={() => {
+                                if (instances.length > 1) {
+                                    return;
+                                }
+
+                                handleHover(instances[0]);
+                            }}
                             append={
                                 instances.length > 1 ? (
                                     <Dropdown variant="outline">

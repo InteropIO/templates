@@ -1,44 +1,8 @@
-import { IOConnectBrowser } from "@interopio/browser";
 import { Button, ButtonGroup, List } from "@interopio/components-react";
-import { IOConnectContext } from "@interopio/react-hooks";
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { IntentsViewProps } from "./types";
 
-const IntentsView = ({ chosenIntentName, handleSelectIntentClick, setShowIntentList }: IntentsViewProps) => {
-    const io = useContext(IOConnectContext);
-
-    const [methodsForFilter, setMethodsForFilter] = useState<IOConnectBrowser.Intents.IntentInfo[]>([]);
-
-    useEffect(() => {
-        let unOnIntentAdded: () => void;
-        let unOnIntentRemoved: () => void;
-
-        const retrieveMethodsForFilter = async () => {
-            const handlerFilter: IOConnectBrowser.Intents.HandlerFilter = (io as any).intents.resolver.handlerFilter;
-
-            if (!handlerFilter) {
-                return;
-            }
-
-            unOnIntentAdded = (io as any).intents.resolver.onIntentAdded((intent: IOConnectBrowser.Intents.IntentInfo) => {
-                setMethodsForFilter((methods) => methods.concat([intent]));
-            });
-
-            unOnIntentRemoved = (io as any).intents.resolver.onIntentRemoved((intent: IOConnectBrowser.Intents.IntentInfo) => {
-                setMethodsForFilter((methods) =>
-                    methods.filter((method: IOConnectBrowser.Intents.IntentInfo) => (method.displayName || method.intent) !== (intent.displayName || intent.intent))
-                );
-            });
-        };
-
-        retrieveMethodsForFilter();
-
-        return () => {
-            unOnIntentAdded();
-            unOnIntentRemoved();
-        };
-    }, [io]);
-
+const IntentsView = ({ chosenIntentName, handleSelectIntentClick, setShowIntentList, methodsForFilter }: IntentsViewProps) => {
     return (
         <>
             <List checkIcon="check" variant="single">

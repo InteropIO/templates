@@ -9,6 +9,7 @@ import { useThemeSync } from "./hooks/useTheme";
 import IntentsView from "./components/IntentsView/IntentsView";
 import { IntentsViewProps } from "./components/IntentsView/types";
 import { HandlersViewProps } from "./components/HandlersView/types";
+import { Handlers, InstanceIntentHandler } from "./shared/types";
 
 const App = () => {
     const io = useContext(IOConnectContext);
@@ -18,6 +19,9 @@ const App = () => {
     const [chosenIntentName, setChosenIntentName] = useState<string>("");
     const [showIntentList, setShowIntentList] = useState<boolean>(!!io.intents.resolver?.handlerFilter);
     const [callerName, setCallerName] = useState<string>("");
+
+    const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
+    const [methodsForFilter, setMethodsForFilter] = useState<IOConnectBrowser.Intents.IntentInfo[]>([]);
 
     useThemeSync();
 
@@ -86,6 +90,79 @@ const App = () => {
         setTitle();
     }, [io, chosenIntentName]);
 
+    useEffect(() => {
+        let unsubOnHandlerAdded: () => void;
+        let unsubOnHandlerRemoved: () => void;
+
+        const subscribeOnHandlerAdded = () => {
+            unsubOnHandlerAdded = (io as any).intents.resolver?.onHandlerAdded(
+                (handler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo): void => {
+                    if (showIntentList) {
+                        setMethodsForFilter((methods) => methods.concat([intent]));
+                    }
+
+                    if (chosenIntentName && chosenIntentName !== intent.intent) {
+                        return;
+                    }
+
+                    const isInstance = handler.instanceId;
+                    const isFirstOpenInstance = handlers.instances.find((intentHandler) => intentHandler.handler.applicationName === handler.applicationName);
+
+                    if (isInstance && isFirstOpenInstance) {
+                        setHandlers((handlers) => ({
+                            apps: handlers.apps,
+                            instances: [
+                                ...handlers.instances,
+                                { handler: { ...handler, id: handler.instanceId }, intent, show: true } as { handler: InstanceIntentHandler; intent: IOConnectBrowser.Intents.IntentInfo; }
+                            ],
+                        }));
+
+                        return;
+                    }
+
+                    const handlerWithId = { ...handler, id: isInstance ? handler.instanceId : handler.applicationName };
+
+                    const updateValue = handler.instanceId ? "instances" : "apps";
+
+                    setHandlers((handlers) => ({ ...handlers, [updateValue]: [...handlers[updateValue], { handler: handlerWithId, intent }] }));
+                }
+            );
+        };
+
+        const subscribeOnHandlerRemoved = () => {
+            unsubOnHandlerRemoved = (io as any).intents.resolver?.onHandlerRemoved(
+                (removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo) => {
+                    if (showIntentList) {
+                        setMethodsForFilter((methods) =>
+                            methods.filter((method: IOConnectBrowser.Intents.IntentInfo) => (method.displayName || method.intent) !== (intent.displayName || intent.intent))
+                        );
+                    }
+
+                    if (chosenIntentName && chosenIntentName !== intent.intent) {
+                        return;
+                    }
+
+                    const updateValue = removedHandler.instanceId ? "instances" : "apps";
+
+                    setHandlers((handlers) => ({
+                        ...handlers,
+                        [updateValue]: handlers[updateValue].filter(({ handler }) =>
+                            removedHandler.instanceId ? handler.id !== removedHandler.instanceId : handler.applicationName !== removedHandler.applicationName
+                        ),
+                    }));
+                }
+            );
+        };
+
+        subscribeOnHandlerAdded();
+        subscribeOnHandlerRemoved();
+
+        return () => {
+            unsubOnHandlerAdded();
+            unsubOnHandlerRemoved();
+        };
+    }, [io]);
+
     const handleSelectIntentClick = (name: string) => {
         if (!chosenIntentName) {
             setChosenIntentName(name);
@@ -96,12 +173,12 @@ const App = () => {
     };
 
     const getIntentsViewProps = (): IntentsViewProps => {
-        return { chosenIntentName, handleSelectIntentClick, setShowIntentList };
+        return { chosenIntentName, handleSelectIntentClick, setShowIntentList, methodsForFilter, setHandlers };
     };
 
     const getHandlersViewProps = (): HandlersViewProps => {
-        return { intentName: chosenIntentName, callerName, setShowIntentList };
-    }
+        return { intentName: chosenIntentName, callerName, setShowIntentList, handlers };
+    };
 
     return (
         <Panel>
@@ -110,11 +187,7 @@ const App = () => {
             </Panel.Header>
             <Panel.Body>
                 <Block title={description} />
-                {showIntentList ? (
-                    <IntentsView {...getIntentsViewProps()} />
-                ) : (
-                    <HandlersView {...getHandlersViewProps()} />
-                )}
+                {showIntentList ? <IntentsView {...getIntentsViewProps()} /> : <HandlersView {...getHandlersViewProps()} />}
             </Panel.Body>
         </Panel>
     );

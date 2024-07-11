@@ -14,8 +14,8 @@ export interface InstanceIntentHandlers {
 }
 
 export interface Handlers {
-    apps: AppIntentHandler[];
-    instances: InstanceIntentHandler[];
+    apps: ({ intent: IOConnectBrowser.Intents.IntentInfo, handler: AppIntentHandler })[];
+    instances: ({ intent: IOConnectBrowser.Intents.IntentInfo, handler: InstanceIntentHandler })[];
 }
 
 export interface ListProps {
