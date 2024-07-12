@@ -32,11 +32,13 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHand
         return groupedInstances;
     };
 
-    // TODO: focusing not working in browser?! 
+    // TODO: focusing not working in browser?!
     const handleHover = async (handler: InstanceIntentHandler) => {
         const win = io.windows.findById(handler.instanceId);
 
-        if (!win) {
+        const inBrowser = (window as any).iobrowser || (window as any).glue42core;
+        
+        if (!win || inBrowser) {
             return;
         }
 
