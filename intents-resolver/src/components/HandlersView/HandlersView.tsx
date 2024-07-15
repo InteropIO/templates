@@ -92,11 +92,15 @@ const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: H
     return (
         <>
             <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchQueryChange={handleSearchQueryChange} />
-            <InstancesList {...getListProps()} />
-            <AppsList {...getListProps()} />
+            <div className="io-intent-list-wrapper">
+                <InstancesList {...getListProps()} />
+                <AppsList {...getListProps()} />
+            </div>
             <Checkbox label={`Always use this app for "${getIntentName()}" in "${callerName}"`} onClick={(e) => setRememberChoice((e as any).target.checked)} />
-            <ButtonGroup align="right">
-                {io.intents.resolver?.handlerFilter ? <Button variant="outline" text="Back" onClick={() => setShowIntentList(true)} /> : null}
+            <ButtonGroup align="right" variant="fullwidth">
+                {io.intents.resolver?.handlerFilter ? (
+                    <Button text="Back" variant="link" onClick={() => setShowIntentList(true)} />
+                ) : null}
                 <Button disabled={!chosenIntentHandler} variant="primary" text="Action" onClick={handleActionClick} />
             </ButtonGroup>
         </>

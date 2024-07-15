@@ -16,7 +16,7 @@
     "@interopio/desktop": "^6.4.0",
     "@interopio/intents-resolver-api": "^2.3.0",
     "@interopio/react-hooks": "^3.3.0",
-    "@interopio/theme": "^2.1.26",
+    "@interopio/theme": "^2.1.30",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@vitejs/plugin-react": "^4.3.1",

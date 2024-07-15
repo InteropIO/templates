@@ -1,0 +1,26 @@
+:root {
+    --panel-border-radius: 0;
+    --ir-p-color: var(--text-states-active);
+}
+
+#root,
+body,
+html {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.io-panel {
+    flex-grow: 1;
+}
+
+.io-intent-list-wrapper {
+    flex-grow: 1;
+    overflow: auto;
+}
+
+.io-text-default-lh16 {
+    color: var(--ir-p-color);
+}

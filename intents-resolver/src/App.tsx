@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "@interopio/theme";
+import "./App.css";
 import { Block, Panel, Title } from "@interopio/components-react";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
@@ -186,7 +187,7 @@ const App = () => {
                 <Title text="Intents Resolver" size="large" />
             </Panel.Header>
             <Panel.Body>
-                <Block title={description} />
+                <p className="io-text-default-lh16">{description}</p>
                 {showIntentList ? <IntentsView {...getIntentsViewProps()} /> : <HandlersView {...getHandlersViewProps()} />}
             </Panel.Body>
         </Panel>

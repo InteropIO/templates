@@ -65,8 +65,8 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHand
                             }}
                             append={
                                 instances.length > 1 ? (
-                                    <Dropdown variant="outline">
-                                        <Dropdown.Button icon="chevron-down">App Instances</Dropdown.Button>
+                                    <Dropdown variant="light">
+                                        <Dropdown.Button variant="link" icon="chevron-down">App Instances</Dropdown.Button>
                                         <Dropdown.Content>
                                             <List checkIcon="check" variant="single">
                                                 {instances.map((handler) => (
