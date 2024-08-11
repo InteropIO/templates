@@ -63,14 +63,7 @@ const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: H
             return;
         }
 
-        return io.intents.resolver?.sendResponse({
-            intent:
-                intentName || io.intents.resolver.handlerFilter?.intent || typeof (io as any).intents.resolver.intent === "string"
-                    ? (io as any).intents.resolver.intent
-                    : (io as any).intents.resolver.intent.intent,
-            handler: chosenIntentHandler,
-            rememberChoice,
-        });
+        return io.intents.resolver?.sendResponse(chosenIntentHandler as any, { rememberChoice, intent: intentName });
     };
 
     const handleSearchQueryChange = (e) => {

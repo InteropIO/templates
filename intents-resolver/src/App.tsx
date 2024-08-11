@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import "@interopio/theme";
 import "./App.css";
-import { Block, Panel, Title } from "@interopio/components-react";
+import { Panel, Title } from "@interopio/components-react";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
 import HandlersView from "./components/HandlersView/HandlersView";
-import { NO_APP_WINDOW } from "./shared/constants";
 import { useThemeSync } from "./hooks/useTheme";
 import IntentsView from "./components/IntentsView/IntentsView";
 import { IntentsViewProps } from "./components/IntentsView/types";
@@ -27,9 +26,9 @@ const App = () => {
     useThemeSync();
 
     useEffect(() => {
-        const setTitleForHandlersFilter = ({ intent, title, applicationNames, contextTypes, resultType }: IOConnectBrowser.Intents.HandlerFilter) => {
+        const setTitleForHandlersFilter = ({ intent, title, applicationNames, contextTypes, resultType }: IOConnectBrowser.Intents.HandlerFilter, callerName: string) => {
             if (intent) {
-                setDescription(`"${chosenIntentName || intent}" action is unassigned. Choose an app to perform this action.`);
+                setDescription(`"${chosenIntentName || intent}" action from "${callerName}" is unassigned. Choose an app to perform this action.`);
                 return;
             }
 
@@ -38,10 +37,10 @@ const App = () => {
                 return;
             }
 
-            const contextTypesString = contextTypes?.length ? `${contextTypes.join(", ")} contexts` : "";
+            const contextTypesString = contextTypes?.length ? `'${contextTypes.join(", ")}' contexts` : "";
             const applicationNamesString = applicationNames?.length ? `${applicationNames.join(", ")} apps` : "";
 
-            const description = `Choose action for ${contextTypesString}${contextTypesString ? "and" : ""}${resultType ? `'${resultType}' result type` : ""}${
+            const description = `Choose action for ${contextTypesString}${contextTypesString && (resultType || applicationNames) ? "and" : ""}${resultType ? `'${resultType}' result type` : ""}${
                 resultType && applicationNamesString ? "and" : ""
             }${applicationNamesString ? `'${applicationNamesString}' applications` : ""}`;
 
@@ -51,41 +50,21 @@ const App = () => {
         const setTitle = () => {
             const { handlerFilter, intent } = io.intents.resolver!;
 
-            const callerId = (io as any).intents.resolver?.callerId;
+            const caller = (io as any).intents.resolver?.caller;
 
-            const instance = io.interop.servers().find((server) => server.instance === callerId);
-
-            const appName = instance?.application || instance?.applicationName;
-
-            const inDesktop = (window as any).iodesktop || (window as any).glue42gd;
-            const inBrowser = (window as any).iobrowser || (window as any).glue42core;
+            const callerNameToShow = caller.applicationTitle || caller.applicationName || caller.id;
 
             const intentName = chosenIntentName || typeof intent === "string" ? intent : intent?.intent || "";
 
-            const caller = instance?.application || instance?.applicationName || instance?.instance || NO_APP_WINDOW;
-
-            setCallerName(caller);
+            setCallerName(callerNameToShow);
 
             if (handlerFilter) {
-                setTitleForHandlersFilter(handlerFilter);
+                setTitleForHandlersFilter(handlerFilter, callerNameToShow);
+                
                 return;
             }
 
-            if (inBrowser && instance?.application === "Platform") {
-                setDescription(`"${intentName}" action from "Platform" is unassigned. Choose an app to perform this action.`);
-                return;
-            }
-
-            if (!appName || !io.appManager.application(appName) || (inDesktop && appName === NO_APP_WINDOW)) {
-                setDescription(`"${intentName}" action is unassigned. Choose an app to perform this action.`);
-                return;
-            }
-
-            const app = io.appManager.application(appName)!;
-
-            setDescription(`"${intentName}" action from "${app.title || app.name}" is unassigned. Choose an app to perform this action.`);
-
-            setCallerName(app.title || app.name);
+            setDescription(`"${intentName}" action from "${callerNameToShow}" is unassigned. Choose an app to perform this action.`);
         };
 
         setTitle();
@@ -174,7 +153,7 @@ const App = () => {
     };
 
     const getIntentsViewProps = (): IntentsViewProps => {
-        return { chosenIntentName, handleSelectIntentClick, setShowIntentList, methodsForFilter, setHandlers };
+        return { chosenIntentName, handleSelectIntentClick, setShowIntentList, methodsForFilter };
     };
 
     const getHandlersViewProps = (): HandlersViewProps => {
