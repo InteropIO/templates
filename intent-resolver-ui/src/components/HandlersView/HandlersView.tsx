@@ -17,7 +17,7 @@ const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: H
     const [chosenIntentHandler, setChosenIntentHandler] = useState<IOConnectBrowser.Intents.ResolverIntentHandler | IOConnectDesktop.Intents.ResolverIntentHandler | undefined>(
         undefined
     );
-    const [rememberChoice, setRememberChoice] = useState<boolean>(false);
+    const [saveHandler, setSaveHandler] = useState<boolean>(false);
 
     useEffect(() => {
         const newFilteredApps = handlers.apps.filter(({ handler, intent }) => {
@@ -63,7 +63,7 @@ const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: H
             return;
         }
 
-        return io.intents.resolver?.sendResponse(chosenIntentHandler as any, { rememberChoice, intent: intentName });
+        return io.intents.resolver?.sendResponse(chosenIntentHandler as any, { saveHandler, intent: intentName });
     };
 
     const handleSearchQueryChange = (e) => {
@@ -89,7 +89,7 @@ const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: H
                 <InstancesList {...getListProps()} />
                 <AppsList {...getListProps()} />
             </div>
-            <Checkbox label={`Always use this app for "${getIntentName()}" in "${callerName}"`} onClick={(e) => setRememberChoice((e as any).target.checked)} />
+            <Checkbox label={`Always use this app for "${getIntentName()}" in "${callerName}"`} onClick={(e) => setSaveHandler((e as any).target.checked)} />
             <ButtonGroup align="right" variant="fullwidth">
                 {io.intents.resolver?.handlerFilter ? (
                     <Button text="Back" variant="link" onClick={() => setShowIntentList(true)} />
