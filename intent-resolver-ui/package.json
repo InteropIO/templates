@@ -6,13 +6,13 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
-    "@interopio/components-react": "^0.2.1",
     "prop-types": "^15.8.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
   },
   "devDependencies": {
     "@interopio/browser": "^3.3.0",
+    "@interopio/components-react": "^0.3.0",
     "@interopio/desktop": "^6.4.0",
     "@interopio/intents-resolver-api": "^2.3.0",
     "@interopio/react-hooks": "^3.3.0",
