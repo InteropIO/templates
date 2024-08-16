@@ -10,6 +10,7 @@ import IntentsView from "./components/IntentsView/IntentsView";
 import { IntentsViewProps } from "./components/IntentsView/types";
 import { HandlersViewProps } from "./components/HandlersView/types";
 import { Handlers, InstanceIntentHandler } from "./shared/types";
+import { BrowserClientControlMethodName, DesktopClientControlMethodName } from "./shared/constants";
 
 const App = () => {
     const io = useContext(IOConnectContext);
@@ -17,7 +18,7 @@ const App = () => {
 
     const [description, setDescription] = useState<string>("");
     const [chosenIntentName, setChosenIntentName] = useState<string>("");
-    const [showIntentList, setShowIntentList] = useState<boolean>(!!io.intents.resolver?.handlerFilter);
+    const [showIntentList, setShowIntentList] = useState<boolean>(!!(io.intents.resolver as any)?.handlerFilter);
     const [callerName, setCallerName] = useState<string>("");
 
     const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
@@ -26,9 +27,9 @@ const App = () => {
     useThemeSync();
 
     useEffect(() => {
-        const setTitleForHandlersFilter = ({ intent, title, applicationNames, contextTypes, resultType }: IOConnectBrowser.Intents.HandlerFilter, callerName: string) => {
+        const setTitleForHandlersFilter = ({ intent, title, applicationNames, contextTypes, resultType }: IOConnectBrowser.Intents.HandlerFilter, callerName?: string) => {
             if (intent) {
-                setDescription(`"${chosenIntentName || intent}" action from "${callerName}" is unassigned. Choose an app to perform this action.`);
+                setDescription(`"${chosenIntentName || intent}" action ${callerName ? `from "${callerName}" ` : ""}is unassigned. Choose an app to perform this action.`);
                 return;
             }
 
@@ -48,11 +49,11 @@ const App = () => {
         };
 
         const setTitle = () => {
-            const { handlerFilter, intent } = io.intents.resolver!;
+            const { handlerFilter, intent } = io.intents.resolver! as any;
 
             const caller = (io as any).intents.resolver?.caller;
 
-            const callerNameToShow = caller.applicationTitle || caller.applicationName || caller.id;
+            const callerNameToShow: string = caller ? caller.applicationTitle || caller.applicationName || caller.id : "";
 
             const intentName = chosenIntentName || typeof intent === "string" ? intent : intent?.intent || "";
 
@@ -64,7 +65,7 @@ const App = () => {
                 return;
             }
 
-            setDescription(`"${intentName}" action from "${callerNameToShow}" is unassigned. Choose an app to perform this action.`);
+            setDescription(`"${intentName}" action ${callerNameToShow ? `from "${callerNameToShow}" ` : ""}is unassigned. Choose an app to perform this action.`);
         };
 
         setTitle();
@@ -76,12 +77,12 @@ const App = () => {
 
         const subscribeOnHandlerAdded = () => {
             unsubOnHandlerAdded = (io as any).intents.resolver?.onHandlerAdded(
-                (handler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo): void => {
-                    if (showIntentList) {
+                (handler: IOConnectBrowser.Intents.ResolverIntentHandler, intent?: IOConnectBrowser.Intents.IntentInfo): void => {
+                    if (showIntentList && intent) {
                         setMethodsForFilter((methods) => methods.concat([intent]));
                     }
 
-                    if (chosenIntentName && chosenIntentName !== intent.intent) {
+                    if (chosenIntentName && chosenIntentName !== intent?.intent) {
                         return;
                     }
 
@@ -93,7 +94,7 @@ const App = () => {
                             apps: handlers.apps,
                             instances: [
                                 ...handlers.instances,
-                                { handler: { ...handler, id: handler.instanceId }, intent, show: true } as { handler: InstanceIntentHandler; intent: IOConnectBrowser.Intents.IntentInfo; }
+                                { handler: { ...handler, id: handler.instanceId }, intent } as { handler: InstanceIntentHandler; intent: IOConnectBrowser.Intents.IntentInfo; }
                             ],
                         }));
 
@@ -111,14 +112,14 @@ const App = () => {
 
         const subscribeOnHandlerRemoved = () => {
             unsubOnHandlerRemoved = (io as any).intents.resolver?.onHandlerRemoved(
-                (removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler, intent: IOConnectBrowser.Intents.IntentInfo) => {
-                    if (showIntentList) {
+                (removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler, intent?: IOConnectBrowser.Intents.IntentInfo) => {
+                    if (showIntentList && intent) {
                         setMethodsForFilter((methods) =>
                             methods.filter((method: IOConnectBrowser.Intents.IntentInfo) => (method.displayName || method.intent) !== (intent.displayName || intent.intent))
                         );
                     }
 
-                    if (chosenIntentName && chosenIntentName !== intent.intent) {
+                    if (chosenIntentName && chosenIntentName !== intent?.intent) {
                         return;
                     }
 
@@ -142,6 +143,35 @@ const App = () => {
             unsubOnHandlerRemoved();
         };
     }, [io]);
+
+    useEffect(() => {
+        const checkSetShowIntentList = async () => {
+            // only use it if 'filterHandlers' is defined 
+            if (!(io.intents.resolver as any).filterHandlers) {
+                setShowIntentList(false);
+
+                return;
+            }
+
+            const globalBrowserNamespace = (window as any).glue42core || (window as any).iobrowser;
+
+            const methodName = globalBrowserNamespace ? BrowserClientControlMethodName : DesktopClientControlMethodName;
+
+            const data = globalBrowserNamespace ? { domain: "system", operation: "isFdc3DataWrappingSupported" } : { command: "isFdc3DataWrappingSupported" };
+
+            try {
+                const res = await io.interop.invoke<{ isSupported: boolean }>(methodName, data, { instance: io.interop.instance.instance });
+    
+                const { isSupported } = res.returned;
+
+                setShowIntentList(isSupported);
+            } catch (error) {
+                setShowIntentList(false);
+            }
+        };
+
+        checkSetShowIntentList();
+    }, [io])
 
     const handleSelectIntentClick = (name: string) => {
         if (!chosenIntentName) {

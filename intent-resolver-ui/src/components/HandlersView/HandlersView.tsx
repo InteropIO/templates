@@ -9,7 +9,7 @@ import AppsList from "../AppsList/AppsList";
 import { Button, ButtonGroup, Checkbox } from "@interopio/components-react";
 import { HandlersViewProps } from "./types";
 
-const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: HandlersViewProps) => {
+const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: HandlersViewProps) => {    
     const io = useContext(IOConnectContext);
 
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -89,9 +89,9 @@ const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: H
                 <InstancesList {...getListProps()} />
                 <AppsList {...getListProps()} />
             </div>
-            <Checkbox label={`Always use this app for "${getIntentName()}" in "${callerName}"`} onClick={(e) => setSaveHandler((e as any).target.checked)} />
+            <Checkbox label={`Always use this app for "${getIntentName()}" ${!!callerName ? `in "${callerName}"` : ""}`} onClick={(e) => setSaveHandler((e as any).target.checked)} />
             <ButtonGroup align="right" variant="fullwidth">
-                {io.intents.resolver?.handlerFilter ? (
+                {(io.intents.resolver as any)?.handlerFilter ? (
                     <Button text="Back" variant="link" onClick={() => setShowIntentList(true)} />
                 ) : null}
                 <Button disabled={!chosenIntentHandler} variant="primary" text="Action" onClick={handleActionClick} />
