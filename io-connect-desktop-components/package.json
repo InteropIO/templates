@@ -7,7 +7,7 @@
     "@interopio/components-react": "^0.2.0",
     "@interopio/desktop": "^6.4.0",
     "@interopio/react-hooks": "^3.2.2",
-    "@interopio/theme": "^2.1.24",
+    "@interopio/theme": "^2.1.30",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^16.18.25",
     "@types/react": "^18.2.43",
