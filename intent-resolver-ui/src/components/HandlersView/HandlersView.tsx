@@ -66,7 +66,7 @@ const HandlersView = ({ callerName, intentName, setShowIntentList, handlers }: H
         return io.intents.resolver?.sendResponse(chosenIntentHandler as any, { saveHandler, intent: intentName });
     };
 
-    const handleSearchQueryChange = (e) => {
+    const handleSearchQueryChange = (e: any) => {
         setSearchQuery((e.target as HTMLTextAreaElement).value);
     };
 
