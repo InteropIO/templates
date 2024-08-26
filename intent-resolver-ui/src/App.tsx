@@ -22,8 +22,8 @@ const App = () => {
     const [callerName, setCallerName] = useState<string>("");
 
     const [handlers, setHandlers] = useState<Handlers>({ apps: [], instances: [] });
-    const [methodsForFilter, setMethodsForFilter] = useState<IOConnectBrowser.Intents.IntentInfo[]>([]);
-
+    const [intentsForFilter, setIntentsForFilter] = useState<IOConnectBrowser.Intents.IntentInfo[]>([]);
+    
     useThemeSync();
 
     useEffect(() => {
@@ -77,9 +77,9 @@ const App = () => {
 
         const subscribeOnHandlerAdded = () => {
             unsubOnHandlerAdded = (io as any).intents.resolver?.onHandlerAdded(
-                (handler: IOConnectBrowser.Intents.ResolverIntentHandler, intent?: IOConnectBrowser.Intents.IntentInfo): void => {
+                (handler: IOConnectBrowser.Intents.ResolverIntentHandler, intent?: IOConnectBrowser.Intents.IntentInfo): void => {                                      
                     if (showIntentList && intent) {
-                        setMethodsForFilter((methods) => methods.concat([intent]));
+                        setIntentsForFilter((methods) => methods.concat([intent]));
                     }
 
                     if (chosenIntentName && chosenIntentName !== intent?.intent) {
@@ -114,7 +114,7 @@ const App = () => {
             unsubOnHandlerRemoved = (io as any).intents.resolver?.onHandlerRemoved(
                 (removedHandler: IOConnectBrowser.Intents.ResolverIntentHandler, intent?: IOConnectBrowser.Intents.IntentInfo) => {
                     if (showIntentList && intent) {
-                        setMethodsForFilter((methods) =>
+                        setIntentsForFilter((methods) =>
                             methods.filter((method: IOConnectBrowser.Intents.IntentInfo) => (method.displayName || method.intent) !== (intent.displayName || intent.intent))
                         );
                     }
@@ -146,9 +146,16 @@ const App = () => {
 
     useEffect(() => {
         const checkSetShowIntentList = async () => {
-            // only use it if 'filterHandlers' is defined 
-            if (!(io.intents.resolver as any).filterHandlers) {
+            // only use it if 'handlerFilter' is defined 
+            if (typeof (io.intents.resolver as any).handlerFilter !== "object") {
                 setShowIntentList(false);
+
+                return;
+            }
+
+            if ((io.intents.resolver as any).handlerFilter.intent) {               
+                setShowIntentList(false);
+                setChosenIntentName((io.intents.resolver as any).filterHandler.intent);
 
                 return;
             }
@@ -171,7 +178,7 @@ const App = () => {
         };
 
         checkSetShowIntentList();
-    }, [io])
+    }, [io]);
 
     const handleSelectIntentClick = (name: string) => {
         if (!chosenIntentName) {
@@ -183,7 +190,7 @@ const App = () => {
     };
 
     const getIntentsViewProps = (): IntentsViewProps => {
-        return { chosenIntentName, handleSelectIntentClick, setShowIntentList, methodsForFilter };
+        return { chosenIntentName, handleSelectIntentClick, setShowIntentList, intentsForFilter };
     };
 
     const getHandlersViewProps = (): HandlersViewProps => {

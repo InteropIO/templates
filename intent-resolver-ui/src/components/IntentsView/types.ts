@@ -2,7 +2,7 @@ import { IOConnectBrowser } from "@interopio/browser";
 
 export interface IntentsViewProps {
     chosenIntentName: string;
-    methodsForFilter: IOConnectBrowser.Intents.IntentInfo[];
+    intentsForFilter: IOConnectBrowser.Intents.IntentInfo[];
     handleSelectIntentClick: (name: string) => void;
     setShowIntentList: React.Dispatch<React.SetStateAction<boolean>>;
 }

@@ -1,12 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Dropdown, Icon, ImageIcon, List } from "@interopio/components-react";
 import { InstanceIntentHandler, ListProps } from "../../shared/types";
-import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
 
 const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHandlerClick }: ListProps) => {
-    const io = useContext(IOConnectContext);
-
     const handleListItemClick = (instances: InstanceIntentHandler[]) => {
         if (instances.length > 1) {
             return;
@@ -32,17 +29,8 @@ const InstancesList = ({ filteredHandlers, chosenIntentHandler, handleSelectHand
         return groupedInstances;
     };
 
-    // TODO: focusing not working in browser?!
     const handleHover = async (handler: InstanceIntentHandler) => {
-        const win = io.windows.findById(handler.instanceId);
-
-        const inBrowser = (window as any).iobrowser || (window as any).glue42core;
-        
-        if (!win || inBrowser) {
-            return;
-        }
-
-        await win.focus();
+        // TODO: implement when hover area and pop up window is ready for io.CD
     };
 
     return (

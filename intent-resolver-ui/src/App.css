@@ -24,3 +24,23 @@ html {
 .io-text-default-lh16 {
     color: var(--ir-p-color);
 }
+
+.column-wrapper {
+    position: relative
+}
+
+.input-search-icon {
+    position: absolute;
+    bottom: 0.15em;
+}
+
+.input-close-icon {
+    position: absolute;
+    bottom: 0.15em;
+    right: 0
+}
+
+#input {
+    padding-left: 2.15em;
+    padding-right: 2.15em
+}
