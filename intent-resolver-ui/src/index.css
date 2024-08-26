@@ -11,3 +11,50 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+:root {
+  --panel-border-radius: 0;
+  --ir-p-color: var(--text-states-active);
+}
+
+#root,
+body,
+html {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.io-panel {
+  flex-grow: 1;
+}
+
+.io-intent-list-wrapper {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.io-text-default-lh16 {
+  color: var(--ir-p-color);
+}
+
+.column-wrapper {
+  position: relative
+}
+
+.input-search-icon {
+  position: absolute;
+  bottom: 0.15em;
+}
+
+.input-close-icon {
+  position: absolute;
+  bottom: 0.15em;
+  right: 0
+}
+
+#input {
+  padding-left: 2.15em;
+  padding-right: 2.15em
+}

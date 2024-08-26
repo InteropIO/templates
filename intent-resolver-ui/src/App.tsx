@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import "@interopio/theme";
-import "./App.css";
 import { Panel, Title } from "@interopio/components-react";
 import { IOConnectContext } from "@interopio/react-hooks";
 import { IOConnectBrowser } from "@interopio/browser";
