@@ -1,59 +1,33 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-import ReactDOM from "react-dom/client";
-import IOConnectIntentsResolverUI from "@interopio/intents-resolver-ui";
-import { IOConnectProvider } from "@interopio/react-hooks";
-import IOConnectIntentsResolver from "@interopio/intents-resolver-api";
-import "@interopio/intents-resolver-ui/styles";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { IOConnectProvider } from '@interopio/react-hooks'
 import IOBrowser from "@interopio/browser";
 import IODesktop from "@interopio/desktop";
-
-// const initialize = async () => {
-//   const io = await IOBrowser({ libraries: [IOConnectIntentsResolver] });
-
-//   (window as any).io = io;
-
-//   console.log("IO configured successfully");
-
-//   return io;
-// }
-
-// const render = (io: any) => {
-//   ReactDOM.createRoot(document.getElementById('root')!).render(
-//     <React.StrictMode>
-//       <IOConnectIntentsResolverUI config={{ io }}/>
-//     </React.StrictMode>,
-//   );
-// }
-
-// initialize().then((io) => render(io));
-
-// ---------------------------------------------------------------------------------
+import IOConnectIntentsResolver from '@interopio/intents-resolver-api';
+import IOConnectIntentsResolverUI from "@interopio/intents-resolver-ui";
+import { IOConnectDesktop } from "@interopio/desktop";
+import "@interopio/intents-resolver-ui/styles";
 
 const config = {
-    browser: {
-        config: {
-            libraries: [IOConnectIntentsResolver],
-            intents: {
-                enableIntentsResolverUI: false,
-            },
-        },
-        factory: IOBrowser,
+  browser: {
+    config: {
+      libraries: [IOConnectIntentsResolver]
     },
-    desktop: {
-        config: {
-            libraries: [IOConnectIntentsResolver as any],
-            intents: {
-                enableIntentsResolverUI: false,
-            },
-            appManager: "full",
-        },
-        factory: IODesktop,
+    factory: IOBrowser
+  },
+  desktop: {
+    config: {
+      libraries: [IOConnectIntentsResolver],
+      appManager: "full" as IOConnectDesktop.AppManager.Mode
     },
-};
+    factory: IODesktop
+  }
+} 
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
     <IOConnectProvider settings={config}>
-        <IOConnectIntentsResolverUI config={{}}/>
+      <IOConnectIntentsResolverUI config={{}} />
     </IOConnectProvider>
-);
+  </React.StrictMode>,
+)

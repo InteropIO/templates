@@ -10,12 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@interopio/intents-resolver-api": "^2.3.4-next.0",
+    "@interopio/intents-resolver-ui": "^0.0.1-next.0",
+    "@interopio/react-hooks": "^3.3.5-next.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@interopio/browser": "^3.3.4",
-    "@interopio/react-hooks": "^3.3.4",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
