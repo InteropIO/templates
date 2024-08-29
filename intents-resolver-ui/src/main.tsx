@@ -2,10 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { IOConnectProvider } from '@interopio/react-hooks'
 import IOBrowser from "@interopio/browser";
-import IODesktop from "@interopio/desktop";
+import IODesktop, { IOConnectDesktop } from "@interopio/desktop";
 import IOConnectIntentsResolver from '@interopio/intents-resolver-api';
 import IOConnectIntentsResolverUI from "@interopio/intents-resolver-ui";
-import { IOConnectDesktop } from "@interopio/desktop";
 import "@interopio/intents-resolver-ui/styles";
 
 const config = {

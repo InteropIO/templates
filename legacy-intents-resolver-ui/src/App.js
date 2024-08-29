@@ -46,13 +46,13 @@ const App = () => {
   };
 
   const subscribeOnHandlerRemoved = () => {
-    return io.intents.resolver.onHandlerRemoved((removedHandler) => {
-      setHandlers((handlers) => {
-        const removedHandlerWithId = { ...removedHandler, id: removedHandler.type === "app" ? removedHandler.applicationName : removedHandler.instanceId };
+    const filterRemoved = (handlers, removedId) => handlers.filter(handler => handler.id !== removedId);
+    
+    const handleRemoved = (removedHandler) => {
+      setHandlers((handlers) => filterRemoved(handlers, removedHandler.type === "app" ? removedHandler.applicationName : removedHandler.instanceId));
+    };
 
-        return handlers.filter(handler => handler.id !== removedHandlerWithId.id);
-      });
-    });
+    return io.intents.resolver.onHandlerRemoved(handleRemoved);
   };
 
   const submitHandler = async (id) => {
@@ -99,6 +99,7 @@ const App = () => {
                 .filter((handler) => !handler.instanceId)
                 .map((handler) => (
                   <li
+                    role='button'
                     className='list-group-item list-group-item-action d-flex justify-content-between align-items-center'
                     key={handler.id}
                     onClick={() => submitHandler(handler.id)}
@@ -139,6 +140,7 @@ const App = () => {
                 .filter((handler) => handler.instanceId)
                 .map((handler) => (
                   <li
+                    role='button'
                     className='list-group-item list-group-item-action d-flex justify-content-between align-items-center'
                     key={handler.id}
                     onClick={() => submitHandler(handler.id)}
