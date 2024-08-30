@@ -99,26 +99,25 @@ const App = () => {
                 .filter((handler) => !handler.instanceId)
                 .map((handler) => (
                   <li
-                    role='button'
                     className='list-group-item list-group-item-action d-flex justify-content-between align-items-center'
                     key={handler.id}
-                    onClick={() => submitHandler(handler.id)}
-                    style={{ cursor: "pointer" }}
                   >
-                    <span>
-                      {handler.applicationIcon ? (
-                        <img
+                    <button onClick={() => submitHandler(handler.id)} style={{ cursor: "pointer" }} >
+                      <span>
+                        {handler.applicationIcon ? (
+                          <img
                           src={'data:image/png;base64, ' + handler.applicationIcon}
                           alt=''
                           style={{ width: 16 }}
                           className='mr-3'
-                        ></img>
-                      ) : (
-                        <i className='icon-app mr-3'></i>
-                      )}
-                      {handler.title || handler.applicationName}
-                    </span>
-                    <span className={`badge badge-info badge-pill`}>app</span>
+                          ></img>
+                        ) : (
+                          <i className='icon-app mr-3'></i>
+                        )}
+                        {handler.title || handler.applicationName}
+                      </span>
+                      <span className={`badge badge-info badge-pill`}>app</span>
+                    </button>
                   </li>
                 ))}
             </ul>
@@ -140,26 +139,25 @@ const App = () => {
                 .filter((handler) => handler.instanceId)
                 .map((handler) => (
                   <li
-                    role='button'
                     className='list-group-item list-group-item-action d-flex justify-content-between align-items-center'
                     key={handler.id}
-                    onClick={() => submitHandler(handler.id)}
-                    style={{ cursor: "pointer" }}
                   >
-                    <span>
-                      {handler.applicationIcon ? (
-                        <img
-                          src={'data:image/png;base64, ' + handler.applicationIcon}
-                          alt=''
-                          style={{ width: 16 }}
-                          className='mr-3'
-                        ></img>
-                      ) : (
-                        <i className='icon-app mr-3'></i>
-                      )}
-                      {handler.title || handler.applicationName}
-                    </span>
-                    <span className={`badge badge-secondary badge-pill`}>inst</span>
+                    <button onClick={() => submitHandler(handler.id)} style={{ cursor: "pointer" }} >
+                      <span>
+                        {handler.applicationIcon ? (
+                          <img
+                            src={'data:image/png;base64, ' + handler.applicationIcon}
+                            alt=''
+                            style={{ width: 16 }}
+                            className='mr-3'
+                            ></img>
+                          ) : (
+                            <i className='icon-app mr-3'></i>
+                          )}
+                        {handler.title || handler.applicationName}
+                      </span>
+                      <span className={`badge badge-secondary badge-pill`}>inst</span>
+                    </button>
                   </li>
                 ))}
             </ul>
