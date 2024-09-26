@@ -8,16 +8,22 @@ const { ChannelSelector, useIOCDChannels } = IOChannelSelector;
 
 function ChannelSelectorInner() {
   const ref = useRef(null);
-  const { channels, restrictedChannels, onChannelSelected, variant } =
-    useIOCDChannels(ref);
+  const {
+    variant,
+    channels,
+    restrictedChannels,
+    onChannelSelected,
+    onChannelRestricted,
+  } = useIOCDChannels(ref);
 
   return (
     <ChannelSelector
       variant={variant}
       ref={ref}
       channels={channels ?? []}
+      restrictedChannels={restrictedChannels ?? []}
       onChannelSelect={onChannelSelected}
-      restrictedChannels={restrictedChannels}
+      onChannelRestrict={onChannelRestricted}
     />
   );
 }
