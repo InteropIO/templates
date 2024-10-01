@@ -91,7 +91,10 @@ function Notifications() {
     showPanel();
   }, [isPanelVisible, panelApplication, io]);
 
-  useShowHideWindow(notifications.some((n) => n.state === "Active"));
+  useShowHideWindow(
+    notifications.some((n) => n.state === "Active"),
+    false
+  );
 
   return settings.enabledToasts && !isPanelVisible ? (
     <Toasts
