@@ -52,7 +52,7 @@ function Notifications() {
   useHidePanelOnFocusLost(settings.autoHidePanel);
   useHidePanelOnKeyUp();
 
-  return <Panel />;
+  return isPanelVisible ? <Panel /> : null;
 }
 
 export default NotificationsWrapper;
