@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import {
   ThemeProvider,
   useShowHideWindow,
+  useHideWindowOnFocusLost,
   IONotifications,
 } from "@interopio/components-react";
 import { IOConnectProvider } from "@interopio/react-hooks";
@@ -48,9 +49,9 @@ function NotificationsWrapper() {
 function Notifications() {
   const { isPanelVisible, settings } = useNotificationsContext();
 
-  useShowHideWindow(isPanelVisible);
-  useHidePanelOnFocusLost(settings.autoHidePanel);
   useHidePanelOnKeyUp();
+  useHidePanelOnFocusLost(settings.autoHidePanel);
+  useShowHideWindow(isPanelVisible);
 
   return isPanelVisible ? <Panel /> : null;
 }
