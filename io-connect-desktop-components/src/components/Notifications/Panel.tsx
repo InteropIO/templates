@@ -1,10 +1,5 @@
 import { useEffect } from "react";
-import {
-  ThemeProvider,
-  useShowHideWindow,
-  useHideWindowOnFocusLost,
-  IONotifications,
-} from "@interopio/components-react";
+import { ThemeProvider, IONotifications } from "@interopio/components-react";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import API from "@interopio/desktop";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
@@ -14,6 +9,7 @@ const {
   NotificationsPanelProvider,
   useNotificationsContext,
   Panel,
+  useShowHidePanelWindow,
   useHidePanelOnFocusLost,
   useHidePanelOnKeyUp,
 } = IONotifications;
@@ -47,13 +43,13 @@ function NotificationsWrapper() {
 }
 
 function Notifications() {
-  const { isPanelVisible, settings } = useNotificationsContext();
+  const { settings } = useNotificationsContext();
 
+  useShowHidePanelWindow();
   useHidePanelOnKeyUp();
   useHidePanelOnFocusLost(settings.autoHidePanel);
-  useShowHideWindow(isPanelVisible);
 
-  return isPanelVisible ? <Panel /> : null;
+  return <Panel />;
 }
 
 export default NotificationsWrapper;
