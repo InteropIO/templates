@@ -7,6 +7,7 @@ import {
 import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
 import API, { IOConnectDesktop } from "@interopio/desktop";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
+import "@interopio/components-react/dist/styles/components/ui/dropdownmenu.css";
 
 const { NotificationsProvider, useNotificationsContext, Toasts } =
   IONotifications;

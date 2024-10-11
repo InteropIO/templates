@@ -3,6 +3,7 @@ import { ThemeProvider, IONotifications } from "@interopio/components-react";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import API from "@interopio/desktop";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
+import "@interopio/components-react/dist/styles/components/ui/dropdownmenu.css";
 
 const {
   NotificationsProvider,
