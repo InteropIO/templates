@@ -7,6 +7,7 @@ import {
 import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
 import API, { IOConnectDesktop } from "@interopio/desktop";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
+import "@interopio/components-react/dist/styles/components/ui/dropdownmenu.css";
 
 const { NotificationsProvider, useNotificationsContext, Toasts } =
   IONotifications;
@@ -50,7 +51,7 @@ function Notifications() {
     const panelAppName =
       myApplication.userProperties?.panelApplicationName ??
       "io-connect-notifications-panel-application";
-    const panelApp = io.appManager.application(panelAppName);
+    const panelApp = io.appManager.application(panelAppName) ?? null;
 
     setPanelApplication(panelApp);
   }, [io]);
@@ -91,7 +92,10 @@ function Notifications() {
     showPanel();
   }, [isPanelVisible, panelApplication, io]);
 
-  useShowHideWindow(notifications.some((n) => n.state === "Active"));
+  useShowHideWindow(
+    notifications.some((n) => n.state === "Active"),
+    false
+  );
 
   return settings.enabledToasts && !isPanelVisible ? (
     <Toasts
