@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@interopio/components-react": "^0.3.0",
+    "@interopio/components-react": "^0.4.0",
     "@interopio/desktop": "^6.8.0",
     "@interopio/react-hooks": "^3.4.1",
     "@interopio/theme": "^2.2.7",
