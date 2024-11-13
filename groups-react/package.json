@@ -5,7 +5,7 @@
   "homepage": ".",
   "dependencies": {
     "@interopio/desktop": "^6.0.0",
-    "@interopio/groups-ui-react": "^2.0.0",
+    "@interopio/groups-ui-react": "^2.5.0",
     "@interopio/react-hooks": "^3.0.5",
     "@types/node": "^16.11.36",
     "@types/react": "18.0.0",
