@@ -1,20 +1,16 @@
 import { useEffect } from "react";
-import {
-  ThemeProvider,
-  useShowHideWindow,
-  IONotifications,
-} from "@interopio/components-react";
+import { ThemeProvider, IONotifications } from "@interopio/components-react";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import API from "@interopio/desktop";
-import "@interopio/components-react/dist/styles/components/ui/header.css";
-import "@interopio/components-react/dist/styles/components/ui/footer.css";
-import "@interopio/components-react/dist/styles/components/ui/block.css";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
+import "@interopio/components-react/dist/styles/components/ui/dropdownmenu.css";
 
 const {
   NotificationsProvider,
+  NotificationsPanelProvider,
   useNotificationsContext,
   Panel,
+  useShowHidePanelWindow,
   useHidePanelOnFocusLost,
   useHidePanelOnKeyUp,
 } = IONotifications;
@@ -38,7 +34,9 @@ function NotificationsWrapper() {
     >
       <ThemeProvider>
         <NotificationsProvider>
-          <Notifications />
+          <NotificationsPanelProvider>
+            <Notifications />
+          </NotificationsPanelProvider>
         </NotificationsProvider>
       </ThemeProvider>
     </IOConnectProvider>
@@ -46,19 +44,13 @@ function NotificationsWrapper() {
 }
 
 function Notifications() {
-  const { isPanelVisible, settings } = useNotificationsContext();
+  const { settings } = useNotificationsContext();
 
-  useShowHideWindow(isPanelVisible);
-  useHidePanelOnFocusLost(settings.autoHidePanel);
+  useShowHidePanelWindow();
   useHidePanelOnKeyUp();
+  useHidePanelOnFocusLost(settings.autoHidePanel);
 
-  return (
-    <Panel
-      components={{
-        SettingsGeneralPanelAlwaysOnTop: () => <></>,
-      }}
-    />
-  );
+  return <Panel />;
 }
 
 export default NotificationsWrapper;
