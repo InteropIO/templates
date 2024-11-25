@@ -2,44 +2,28 @@
   "name": "workspaces-app-template",
   "version": "2.3.6",
   "private": true,
-  "homepage": "./",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
   "dependencies": {
-    "@interopio/desktop": "^6.0.0",
-    "@interopio/react-hooks": "^3.0.5",
-    "@interopio/workspaces-api": "^3.0.2",
-    "@interopio/workspaces-ui-react": "^3.0.2",
+    "@interopio/desktop": "^6.8.4",
+    "@interopio/react-hooks": "^3.4.6",
+    "@interopio/workspaces-api": "^3.4.3",
+    "@interopio/workspaces-ui-react": "^3.4.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
-    "@types/node": "^12.19.3",
+    "@types/node": "^22.8.6",
     "@types/react": "^16.9.56",
     "@types/react-dom": "^16.9.9",
-    "react-scripts": "^5.0.1",
-    "typescript": "^4.7.4",
+    "@vitejs/plugin-react": "^4.3.3",
+    "globals": "^15.11.0",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.10",
     "web-vitals": "^0.2.4"
   }
 }

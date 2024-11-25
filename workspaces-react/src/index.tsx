@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {  IOConnectProvider} from '@interopio/react-hooks';
+import { IOConnectProvider } from '@interopio/react-hooks';
 import IODesktop from "@interopio/desktop";
 import IOWorkspaces from "@interopio/workspaces-api";
 
