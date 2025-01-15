@@ -25,7 +25,7 @@ export const getIOConfig = (): IOConnectInitSettings => {
             level: 'warn',
           },
         },
-        licenseKey: process.env.REACT_APP_IOCONNECT_BROWSER_LICENSE as string,
+        licenseKey: import.meta.env.VITE_IOCONNECT_BROWSER_LICENSE as string,
       },
     },
   };

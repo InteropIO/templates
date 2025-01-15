@@ -11,5 +11,5 @@ project, **io.Connect Browser** 3.0 or newer is required.
 
 - Run `npm install` to install all dependencies.
 - Run `npm run start` to start the app.
-- For **io.Connect Desktop** projects, open the `workspaces.json` definition file located in the `%LocalAppData%\interop.io\io.Connect Desktop\Desktop\config\apps` folder, add a `"url"` property under the `"details"` top-level key of the Workspaces UI app definition and set it to the location of your Workspaces App (the default is `http://localhost:3000`). For **io.Connect Browser** projects, see the [Enabling Workspaces](https://docs.interop.io/browser/capabilities/windows/workspaces/enabling-workspaces/index.html) documentation.
+- For **io.Connect Desktop** projects, open the `workspaces.json` definition file located in the `%LocalAppData%\interop.io\io.Connect Desktop\Desktop\config\apps` folder, add a `"url"` property under the `"details"` top-level key of the Workspaces UI app definition and set it to the location of your Workspaces App (the default is `http://localhost:5173`). For **io.Connect Browser** projects, see the [Enabling Workspaces](https://docs.interop.io/browser/capabilities/windows/workspaces/enabling-workspaces/index.html) documentation.
 - Start **io.Connect Desktop** or **io.Connect Browser** to start using and modifying your Workspaces App.
