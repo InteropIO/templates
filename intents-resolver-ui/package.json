@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@interopio/intents-resolver-api": "^2.4.0",
-    "@interopio/intents-resolver-ui-react": "^1.0.0",
-    "@interopio/react-hooks": "^3.4.0",
+    "@interopio/intents-resolver-api": "^2.5.0",
+    "@interopio/intents-resolver-ui-react": "^1.1.0",
+    "@interopio/react-hooks": "^3.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
