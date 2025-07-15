@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@interopio/components-react": "^0.4.0",
-    "@interopio/desktop": "^6.8.0",
-    "@interopio/react-hooks": "^3.4.1",
-    "@interopio/theme": "^2.2.7",
+    "@interopio/components-react": "^0.5.1",
+    "@interopio/desktop": "^6.8.3",
+    "@interopio/react-hooks": "^3.4.5",
+    "@interopio/theme": "^2.2.19",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^16.18.25",
     "@types/react": "^18.2.43",
