@@ -4,8 +4,6 @@ import "@interopio/workspaces-ui-react/dist/styles/workspaces.css";
 import { IOConnectContext } from '@interopio/react-hooks';
 import { IOConnectDesktop } from '@interopio/desktop';
 import { IOConnectWorkspaces } from '@interopio/workspaces-api';
-import AfterTabs from './AfterTabs';
-import GroupHeaderButtons from './GroupHeaderButtons';
 
 const App = () => {
     (window as any).io = useContext(IOConnectContext);
@@ -91,12 +89,7 @@ const App = () => {
     }, []);
 
     return (
-        <Workspaces components={{
-            groupHeader: {
-                AfterTabsComponent: AfterTabs,
-                ButtonsComponent: GroupHeaderButtons
-            }
-        }} />
+        <Workspaces />
     );
 }
 
