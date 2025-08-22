@@ -54,7 +54,8 @@ const routes: RouteObject[] = [
   },
 ];
 
-const router = createHashRouter(routes, {});
+// const router = createHashRouter(routes, {});
+const router = createBrowserRouter(routes, {});
 
 function App() {
   return (

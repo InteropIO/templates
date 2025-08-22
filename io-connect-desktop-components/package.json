@@ -11,7 +11,7 @@
   "dependencies": {
     "@interopio/components-react": "^0.5.1",
     "@interopio/desktop": "^6.8.3",
-    "@interopio/react-hooks": "^3.4.5",
+    "@interopio/react-hooks": "^3.5.12",
     "@interopio/theme": "^2.2.19",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^16.18.25",
