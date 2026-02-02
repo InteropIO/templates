@@ -10,13 +10,11 @@
   },
   "dependencies": {
     "@interopio/desktop": "^6.8.4",
-    "@interopio/groups-ui-react": "^2.4.0",
+    "@interopio/groups-ui-react": "^2.7.1",
     "@interopio/react-hooks": "^3.4.7",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.6.4",
-    "web-vitals": "^2.1.4"
+    "typescript": "^4.6.4"
   },
   "devDependencies": {
     "@types/node": "^22.8.6",
