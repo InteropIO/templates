@@ -9,18 +9,18 @@ import NoPage from "./components/NoPage";
 import "@interopio/theme";
 
 const ChannelSelector = React.lazy(
-  () => import("./components/ChannelSelector/ChannelSelector")
+  () => import("./components/ChannelSelector/ChannelSelector"),
 );
 const Dialogs = React.lazy(() => import("./components/Dialogs/Dialogs"));
 const DownloadManager = React.lazy(
-  () => import("./components/DownloadManager/DownloadManager")
+  () => import("./components/DownloadManager/DownloadManager"),
 );
 const Feedback = React.lazy(() => import("./components/Feedback/Feedback"));
 const NotificationToasts = React.lazy(
-  () => import("./components/Notifications/Toasts")
+  () => import("./components/Notifications/Toasts"),
 );
 const NotificationPanel = React.lazy(
-  () => import("./components/Notifications/Panel")
+  () => import("./components/Notifications/Panel"),
 );
 
 const routes: RouteObject[] = [
