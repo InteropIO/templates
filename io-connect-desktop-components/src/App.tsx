@@ -1,32 +1,24 @@
-import React from "react";
-import {
-  RouteObject,
-  RouterProvider,
-  createBrowserRouter,
-  createHashRouter,
-} from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { RouteObject, RouterProvider, createHashRouter } from "react-router-dom";
 import NoPage from "./components/NoPage";
 import "@interopio/theme";
 
-const ChannelSelector = React.lazy(
-  () => import("./components/ChannelSelector/ChannelSelector")
-);
-const Dialogs = React.lazy(() => import("./components/Dialogs/Dialogs"));
-const DownloadManager = React.lazy(
-  () => import("./components/DownloadManager/DownloadManager")
-);
-const Feedback = React.lazy(() => import("./components/Feedback/Feedback"));
-const NotificationToasts = React.lazy(
-  () => import("./components/Notifications/Toasts")
-);
-const NotificationPanel = React.lazy(
-  () => import("./components/Notifications/Panel")
-);
+const Alerts = lazy(() => import("./components/Alerts/Alerts"));
+const ChannelSelector = lazy(() => import("./components/ChannelSelector/ChannelSelector"));
+const Dialogs = lazy(() => import("./components/Dialogs/Dialogs"));
+const DownloadManager = lazy(() => import("./components/DownloadManager/DownloadManager"));
+const Feedback = lazy(() => import("./components/Feedback/Feedback"));
+const NotificationToasts = lazy(() => import("./components/Notifications/Toasts"));
+const NotificationPanel = lazy(() => import("./components/Notifications/Panel"));
 
 const routes: RouteObject[] = [
   {
     path: "/",
     element: <NoPage />,
+  },
+  {
+    path: "alerts",
+    element: <Alerts />,
   },
   {
     path: "channel-selector",
@@ -52,15 +44,19 @@ const routes: RouteObject[] = [
     path: "notifications-panel",
     element: <NotificationPanel />,
   },
+  {
+    path: "*",
+    element: <NoPage />,
+  },
 ];
 
 const router = createHashRouter(routes, {});
 
 function App() {
   return (
-    <React.Suspense fallback={<>...</>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <RouterProvider router={router} />
-    </React.Suspense>
+    </Suspense>
   );
 }
 

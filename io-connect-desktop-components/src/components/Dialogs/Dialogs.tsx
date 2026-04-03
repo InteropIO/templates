@@ -1,10 +1,11 @@
-import { useEffect } from "react";
 import { IODialogs } from "@interopio/components-react";
+import DialogRenderer from "./DialogRenderer";
 import LayoutModifiedDialog from "./LayoutModified";
 import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
 
-const { DialogsProvider, useDialogsContext, Dialog, SingleInputDialog } =
-  IODialogs;
+const { DialogsProvider, useDialogsContext, Dialog, SingleInputDialog } = IODialogs;
+
+const CONFIG_OPERATIONS = ["systemShutdown", "systemRestart", "layoutRestore"];
 
 function DialogsWrapper() {
   return (
@@ -16,34 +17,27 @@ function DialogsWrapper() {
 
 function Dialogs() {
   const { config, setResult } = useDialogsContext();
+  const { operation = "", context = {}, type } = config;
 
-  useEffect(() => {
-    document.title = config.title ?? "Dialog";
-  }, [config.title]);
+  const shouldShowTemplateDialog = config.operation === "requestDialog";
 
-  const isLayoutModified = () => {
-    if (
-      typeof config.context === "object" &&
-      config.context !== null &&
-      "isLayoutModified" in config.context
-    ) {
-      return config.context.isLayoutModified;
-    }
-  };
+  if (shouldShowTemplateDialog) {
+    return <DialogRenderer />;
+  }
 
-  const shouldShowLayoutModifiedDialog =
-    isLayoutModified() &&
-    (config.operation === "systemShutdown" ||
-      config.operation === "systemRestart" ||
-      config.operation === "layoutRestore");
+  const isLayoutModified = Boolean((context as any).isLayoutModified);
+
+  const shouldShowLayoutModifiedDialog = isLayoutModified && CONFIG_OPERATIONS.includes(operation);
 
   if (shouldShowLayoutModifiedDialog) {
     return <LayoutModifiedDialog config={config} setResult={setResult} />;
-  } else if (config.type === "SingleInputDialog") {
-    return <SingleInputDialog config={config} setResult={setResult} />;
-  } else {
-    return <Dialog config={config} setResult={setResult} />;
   }
+
+  if (type === "SingleInputDialog") {
+    return <SingleInputDialog config={config} setResult={setResult} />;
+  }
+
+  return <Dialog config={config} setResult={setResult} />;
 }
 
 export default DialogsWrapper;

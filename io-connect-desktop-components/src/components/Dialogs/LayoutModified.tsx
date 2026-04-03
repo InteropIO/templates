@@ -1,14 +1,31 @@
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useMemo } from "react";
 import { IODialogs, ButtonGroup } from "@interopio/components-react";
+
+type LayoutModifiedProps = Pick<IODialogs.DialogProps, "setResult" | "config">;
 
 const { Dialog, DialogBody, DialogButton, DialogFooter } = IODialogs;
 
-function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
-  const { setResult } = props;
+const BUTTON_CONFIGS = [
+  {
+    id: "save-changes",
+    variant: "primary" as const,
+    text: "Save",
+  },
+  {
+    id: "discard-changes",
+    text: "Discard",
+  },
+  {
+    id: "go-back",
+    text: "Cancel",
+  },
+];
+
+function LayoutModified({ config, setResult }: Readonly<LayoutModifiedProps>) {
   const [focusedButton, setFocusedButton] = useState("save-changes");
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setResult({ action: "clicked", button: focusedButton });
   };
 
@@ -20,46 +37,43 @@ function ModifiedLayoutDialog(props: IODialogs.DialogProps) {
     setFocusedButton(action);
   };
 
-  const CustomDialogBody = (
-    <DialogBody>
-      <p>
-        The Layout has been modified. Do you want to save or discard the changes
-        before closing?
-      </p>
-    </DialogBody>
+  const LayoutModifiedDialogBody = useMemo(
+    () => (
+      <DialogBody>
+        <div>
+          <h1>The Layout has been modified</h1>
+          <p>Do you want to save or discard the changes before closing?</p>
+        </div>
+      </DialogBody>
+    ),
+    []
   );
 
-  const CustomDialogFooter = (
+  const LayoutModifiedDialogFooter = (
     <DialogFooter>
       <ButtonGroup align="right">
-        <DialogButton
-          id="save-changes"
-          variant="primary"
-          text="Save"
-          onClick={handleClick}
-          onButtonFocused={handleFocusChanged}
-          onBlur={handleFocusLoss}
-        />
-        <DialogButton
-          id="discard-changes"
-          text="Discard"
-          onClick={handleClick}
-          onButtonFocused={handleFocusChanged}
-          onBlur={handleFocusLoss}
-        />
-        <DialogButton
-          id="go-back"
-          text="Cancel"
-          onClick={handleClick}
-          onButtonFocused={handleFocusChanged}
-          onBlur={handleFocusLoss}
-        />
+        {BUTTON_CONFIGS.map((buttonConfig) => (
+          <DialogButton
+            key={buttonConfig.id}
+            id={buttonConfig.id}
+            variant={buttonConfig.variant}
+            text={buttonConfig.text}
+            onClick={handleClick}
+            onButtonFocused={handleFocusChanged}
+            onBlur={handleFocusLoss}
+          />
+        ))}
       </ButtonGroup>
     </DialogFooter>
   );
 
   return (
-    <Dialog {...props} body={CustomDialogBody} footer={CustomDialogFooter} />
+    <Dialog
+      config={config}
+      setResult={setResult}
+      body={LayoutModifiedDialogBody}
+      footer={LayoutModifiedDialogFooter}
+    />
   );
 }
-export default ModifiedLayoutDialog;
+export default LayoutModified;

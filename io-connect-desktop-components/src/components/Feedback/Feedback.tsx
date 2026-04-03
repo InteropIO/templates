@@ -6,13 +6,9 @@ const { FeedbackProvider, Feedback } = IOFeedback;
 function FeedbackWrapper() {
   return (
     <FeedbackProvider>
-      <FeedbackInner />
+      <Feedback />
     </FeedbackProvider>
   );
-}
-
-function FeedbackInner() {
-  return <Feedback />;
 }
 
 export default FeedbackWrapper;

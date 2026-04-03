@@ -1,0 +1,12 @@
+#root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.io-panel.io-notifications-settings-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  height: auto;
+}

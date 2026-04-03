@@ -1,23 +1,21 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  ThemeProvider,
-  useShowHideWindow,
-  IONotifications,
-} from "@interopio/components-react";
+import { ThemeProvider, useShowHideWindow, IONotifications } from "@interopio/components-react";
 import { IOConnectProvider, IOConnectContext } from "@interopio/react-hooks";
 import API, { IOConnectDesktop } from "@interopio/desktop";
-import "@interopio/components-react/dist/styles/components/ui/dropdownmenu.css";
-import "@interopio/components-react/dist/styles/components/ui/separator.css";
+import "@interopio/components-react/dist/styles/components/ui/dropdown-menu.css";
+import "@interopio/components-react/dist/styles/components/ui/overlay-scrollbars-container.css";
 import "@interopio/components-react/dist/styles/features/notifications/styles.css";
+import "./Toasts.css";
 
-const { NotificationsProvider, useNotificationsContext, Toasts } =
-  IONotifications;
+const {
+  NotificationsProvider,
+  NotificationsPanelProvider,
+  useNotificationsContext,
+  useNotificationsPanelContext,
+  Toasts,
+} = IONotifications;
 
 function NotificationToastsWrapper() {
-  useEffect(() => {
-    document.title = "Notifications";
-  }, []);
-
   return (
     <IOConnectProvider
       settings={{
@@ -32,20 +30,24 @@ function NotificationToastsWrapper() {
     >
       <ThemeProvider>
         <NotificationsProvider>
-          <Notifications />
+          <NotificationsPanelProvider>
+            <NotificationToasts />
+          </NotificationsPanelProvider>
         </NotificationsProvider>
       </ThemeProvider>
     </IOConnectProvider>
   );
 }
 
-function Notifications() {
+function NotificationToasts() {
   const io = useContext(IOConnectContext) as IOConnectDesktop.API;
-  const { notifications, isPanelVisible, settings } = useNotificationsContext();
+  const { notifications, settings } = useNotificationsContext();
+  const { isPanelVisible } = useNotificationsPanelContext();
   const [panelApplication, setPanelApplication] =
     useState<IOConnectDesktop.AppManager.Application | null>(null);
-  const [appInstance, setAppInstance] =
-    useState<IOConnectDesktop.AppManager.Instance | null>(null);
+  const [appInstance, setAppInstance] = useState<IOConnectDesktop.AppManager.Instance | null>(null);
+
+  const notificationsPanelAPI = io?.notifications?.panel;
 
   useEffect(() => {
     const myApplication = io.appManager.myInstance.application;
@@ -58,40 +60,52 @@ function Notifications() {
   }, [io]);
 
   useEffect(() => {
-    const un = appInstance?.onStopped(() => {
-      io?.notifications?.panel?.hide();
+    if (!notificationsPanelAPI) {
+      return;
+    }
+
+    const unsubscribe = appInstance?.onStopped(() => {
+      notificationsPanelAPI.hide();
     });
 
     return () => {
-      if (un) {
-        un();
-      }
+      unsubscribe?.();
     };
-  }, [io?.notifications?.panel, appInstance]);
+  }, [notificationsPanelAPI, appInstance]);
 
   useEffect(() => {
     const showPanel = async () => {
-      if (isPanelVisible) {
-        const instances = panelApplication?.instances;
+      try {
+        if (!isPanelVisible || !panelApplication) {
+          return;
+        }
 
-        if (instances && instances.length > 0) {
+        const instances = panelApplication.instances;
+
+        if (instances?.length) {
           const instance = instances[0];
           setAppInstance(instance);
-
           const gdWindow = await instance.getWindow();
           gdWindow.show();
-        } else {
-          const instance = await panelApplication?.start();
-
-          if (instance) {
-            setAppInstance(instance);
-          }
+          return;
         }
+
+        const instance = await panelApplication.start();
+
+        if (!instance) {
+          return;
+        }
+
+        setAppInstance(instance);
+        instance.window?.show();
+      } catch (error) {
+        console.error("Failed to show panel:", error);
+        setAppInstance(null);
       }
     };
 
     showPanel();
-  }, [isPanelVisible, panelApplication, io]);
+  }, [isPanelVisible, panelApplication]);
 
   useShowHideWindow(
     notifications.some((n) => n.state === "Active"),
@@ -101,9 +115,7 @@ function Notifications() {
   return settings.enabledToasts && !isPanelVisible ? (
     <Toasts
       style={{
-        display: `${
-          notifications.some((n) => n.state === "Active") ? "flex" : "none"
-        }`,
+        display: notifications.some((n) => n.state === "Active") ? "flex" : "none",
       }}
     />
   ) : null;
