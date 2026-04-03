@@ -1,13 +1,12 @@
 {
   "name": "io-connect-components-app",
-  "version": "0.0.1",
+  "version": "4.3.0",
   "private": true,
   "type": "module",
   "homepage": "./",
   "scripts": {
     "start": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {

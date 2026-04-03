@@ -3,9 +3,8 @@ import DialogRenderer from "./DialogRenderer";
 import LayoutModifiedDialog from "./LayoutModified";
 import "@interopio/components-react/dist/styles/features/dialogs/styles.css";
 
+const CONFIG_OPERATIONS = new Set(["systemShutdown", "systemRestart", "layoutRestore"]);
 const { DialogsProvider, useDialogsContext, Dialog, SingleInputDialog } = IODialogs;
-
-const CONFIG_OPERATIONS = ["systemShutdown", "systemRestart", "layoutRestore"];
 
 function DialogsWrapper() {
   return (
@@ -18,16 +17,14 @@ function DialogsWrapper() {
 function Dialogs() {
   const { config, setResult } = useDialogsContext();
   const { operation = "", context = {}, type } = config;
-
   const shouldShowTemplateDialog = config.operation === "requestDialog";
 
   if (shouldShowTemplateDialog) {
     return <DialogRenderer />;
   }
 
-  const isLayoutModified = Boolean((context as any).isLayoutModified);
-
-  const shouldShowLayoutModifiedDialog = isLayoutModified && CONFIG_OPERATIONS.includes(operation);
+  const isLayoutModified = Boolean((context as any)?.isLayoutModified);
+  const shouldShowLayoutModifiedDialog = isLayoutModified && CONFIG_OPERATIONS.has(operation);
 
   if (shouldShowLayoutModifiedDialog) {
     return <LayoutModifiedDialog config={config} setResult={setResult} />;
