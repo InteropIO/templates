@@ -1,0 +1,28 @@
+{
+  "name": "io-connect-desktop-launchpad",
+  "version": "4.3.0",
+  "homepage": "./",
+  "private": true,
+  "scripts": {
+    "start": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@interopio/components-react": "~4.3.0",
+    "@interopio/desktop": "~6.16.0",
+    "@interopio/react-hooks": "~4.3.0",
+    "@interopio/home-ui-react": "~4.3.0",
+    "@interopio/workspaces-ui-react": "~4.3.0",
+    "@interopio/theme": "~4.3.0",
+    "react": "~18.2.0",
+    "react-dom": "~18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "~20.12.7",
+    "@types/react": "~18.2.79",
+    "@types/react-dom": "~18.2.25",
+    "@vitejs/plugin-react": "~3.0.0",
+    "typescript": "~5.8.2",
+    "vite": "~4.0.1"
+  }
+}

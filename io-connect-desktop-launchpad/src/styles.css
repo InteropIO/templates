@@ -1,0 +1,164 @@
+
+.launchpad {
+  --launchpad-search-bar-margin: 0 var(--spacing-16);
+
+  max-height: 100%;
+}
+
+.launchpad:has(.launchpad-body.collapsed) {
+  max-height: 48px;
+}
+
+.launchpad .logo-button.no-hover:hover {
+  background-color: transparent;
+  color: var(--io-color-text);
+}
+
+.launchpad-header .notifications-button {
+  position: relative;
+}
+
+.launchpad-header .notifications-button .io-badge {
+  position: absolute;
+  top: 7px;
+  right: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--spacing-16);
+  height: var(--spacing-16);
+  margin: calc(var(--spacing-10) * -1) auto 0 calc(var(--spacing-4) * -1);
+  font-size: var(--spacing-10);
+}
+
+.launchpad-header .main-context-menu .io-dropdown-content {
+  min-width: 260px;
+}
+
+.launchpad-header .main-context-menu .io-separator {
+  margin: var(--spacing-4) 0;
+  background-color: var(--base-form-border-default);
+}
+
+.launchpad-body .io-base-section-header .io-list-text {
+  text-transform: capitalize;
+}
+
+.launchpad.docked .launchpad-header .io-control-input {
+  min-width: 270px;
+  max-width: 270px;
+}
+
+.launchpad.docked .launchpad-header {
+  justify-content: flex-start;
+}
+
+.launchpad.docked .launchpad-header .notifications-button {
+  margin-left: auto;
+}
+
+.launchpad-drag-handle {
+  position: absolute;
+  margin-top: var(--spacing-2);
+  transform: translateX(-200%);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.launchpad:hover .launchpad-drag-handle {
+  transform: translateX(-100%);
+  opacity: 1;
+}
+
+.launchpad-extended-area {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.launchpad-extended-area-category {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  height: 80%;
+  padding-left: var(--spacing-8);
+  border-left: var(--launchpad-panel-border);
+  white-space: nowrap;
+}
+
+.launchpad-extended-area-category-items {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.launchpad-extended-area .io-list-item {
+  padding: 0 var(--spacing-8);
+  border-radius: var(--spacing-8);
+}
+
+.launchpad-extended-area .io-list-item-active {
+  background-color: var(--list-item-background-hover);
+}
+
+.launchpad-extended-area .io-list-text {
+  min-width: auto;
+  white-space: nowrap;
+}
+
+.launchpad-extended-area-hide-labels .io-list-item {
+  gap: 0;
+}
+
+.launchpad-extended-area-hide-labels .io-list-text {
+  display: none;
+}
+
+.io-panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+}
+
+.io-panel-overlay .io-panel {
+  height: 100%;
+}
+
+.io-panel-overlay .io-block.restart .flex,
+.io-panel-overlay .io-block.shutdown .flex {
+  gap: var(--preferences-panel-options-gap);
+}
+
+#io-popup-window-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--launchpad-panel-background);
+}
+
+#io-popup-window-container .launchpad-body {
+  width: 100%;
+  height: 100%;
+}
+
+#io-popup-window-container .io-panel {
+  height: 100%;
+}
+
+/* Specific adjustments for panels within the popup window container with overlayscrollbars */
+#io-popup-window-container .io-panel [aria-labelledby="block-title"]:not(:last-of-type),
+#io-popup-window-container .io-panel [class^="io-notifications-settings-panel-"]:not(:last-of-type) {
+  margin-bottom: var(--panel-body-gap);
+}
+
+/* Dark theme: targeting #b0b2b5 (light gray) */
+.dark .io-input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(69%) sepia(5%) saturate(200%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+/* Light theme: targeting #494b50 (dark gray) */
+.light .io-input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(30%) sepia(5%) saturate(300%) hue-rotate(180deg) brightness(90%) contrast(90%);
+}
