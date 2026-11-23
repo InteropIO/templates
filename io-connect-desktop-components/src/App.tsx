@@ -8,8 +8,10 @@ const ChannelSelector = lazy(() => import("./components/ChannelSelector/ChannelS
 const Dialogs = lazy(() => import("./components/Dialogs/Dialogs"));
 const DownloadManager = lazy(() => import("./components/DownloadManager/DownloadManager"));
 const Feedback = lazy(() => import("./components/Feedback/Feedback"));
+const LayoutSharing = lazy(() => import("./components/LayoutSharing/LayoutSharing"));
 const NotificationToasts = lazy(() => import("./components/Notifications/Toasts"));
 const NotificationPanel = lazy(() => import("./components/Notifications/Panel"));
+const PlaceholderApp = lazy(() => import("./components/PlaceholderApp/Page"));
 
 const routes: RouteObject[] = [
   {
@@ -37,12 +39,20 @@ const routes: RouteObject[] = [
     element: <Feedback />,
   },
   {
+    path: "layout-sharing",
+    element: <LayoutSharing />,
+  },
+  {
     path: "notifications-toasts",
     element: <NotificationToasts />,
   },
   {
     path: "notifications-panel",
     element: <NotificationPanel />,
+  },
+  {
+    path: "placeholder-app",
+    element: <PlaceholderApp />,
   },
   {
     path: "*",
