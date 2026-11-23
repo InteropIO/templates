@@ -8,9 +8,4 @@ export default defineConfig({
     port: 4242,
     host: "localhost",
   },
-  build: {
-    commonjsOptions: {
-      include: [/@interopio\/components-react/, /node_modules/],
-    },
-  },
 });
