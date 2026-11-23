@@ -47,6 +47,7 @@ function Notifications() {
   useHidePanelOnKeyUp();
   useHidePanelOnFocusLost(settings.autoHidePanel);
 
+  // Pass autoPlacement={false} here to manage the panel window's size/position yourself instead of the built-in behavior.
   return <Panel />;
 }
 

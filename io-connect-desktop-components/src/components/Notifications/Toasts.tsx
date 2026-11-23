@@ -112,6 +112,7 @@ function NotificationToasts() {
     false
   );
 
+  // Pass autoPlacement={false} here to manage the toasts window's size/position yourself instead of the built-in behavior.
   return settings.enabledToasts && !isPanelVisible ? (
     <Toasts
       style={{

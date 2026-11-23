@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { IODialogs } from "@interopio/components-react";
 import DialogRenderer from "./DialogRenderer";
 import LayoutModifiedDialog from "./LayoutModified";
@@ -18,6 +19,18 @@ function Dialogs() {
   const { config, setResult } = useDialogsContext();
   const { operation = "", context = {}, type } = config;
   const shouldShowTemplateDialog = config.operation === "requestDialog";
+
+  useEffect(() => {
+    const previousTitle = document.title;
+
+    if (config.title) {
+      document.title = config.title;
+    }
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [config.title]);
 
   if (shouldShowTemplateDialog) {
     return <DialogRenderer />;

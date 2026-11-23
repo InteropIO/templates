@@ -1,6 +1,6 @@
 {
   "name": "io-connect-components-app",
-  "version": "4.3.0",
+  "version": "5.1.0",
   "private": true,
   "type": "module",
   "homepage": "./",
@@ -10,20 +10,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@interopio/components-react": "~4.3.0",
-    "@interopio/desktop": "~6.16.0",
-    "@interopio/react-hooks": "~4.3.0",
-    "@interopio/theme": "~4.3.0",
+    "@interopio/components-react": "~5.1.0",
+    "@interopio/desktop": "~6.23.2",
+    "@interopio/manager-api": "~5.0.1",
+    "@interopio/modals-api": "~5.1.0",
+    "@interopio/react-hooks": "~5.1.0",
+    "@interopio/theme": "~5.1.0",
+    "@interopio/workspaces-api": "~5.1.0",
     "@rollup/plugin-terser": "~0.4.3",
-    "@types/node": "~20.12.7",
+    "@types/node": "~20.19.0",
     "@types/react": "~18.2.79",
     "@types/react-dom": "~18.2.25",
-    "@vitejs/plugin-react": "~3.0.0",
+    "@vitejs/plugin-react": "~6.1.2",
     "react": "~18.2.0",
     "react-dom": "~18.2.0",
-    "react-router-dom": "~6.10.0",
+    "react-router-dom": "~7.18.6",
     "typescript": "~5.8.2",
-    "vite": "~4.0.1",
+    "vite": "~8.3.5",
     "web-vitals": "~0.2.4"
   }
 }
