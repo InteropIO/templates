@@ -1,7 +1,7 @@
 # Launchpad App for io.Connect Desktop
 
 Template for creating a custom desktop Launchpad app for **io.Connect Desktop**, built on top of the
-`IOLaunchpadDesktop` feature exported by [`@interopio/components-react`](../../packages/components-react). Clone
+`IOLaunchpadDesktop` feature exported by [`@interopio/components-react`](https://www.npmjs.com/package/@interopio/components-react). Clone
 this app and customize only the pieces you need — everything else keeps working out of the box.
 
 ## Prerequisites
@@ -9,11 +9,13 @@ this app and customize only the pieces you need — everything else keeps workin
 **io.Connect Desktop** is required, since this app only configures the `desktop` factory (see
 [src/constants/constants.ts](src/constants/constants.ts)).
 
+**Node.js** `^20.19.0` or `>=22.12.0` is required by Vite 8.
+
 ## Setup
 
 - Run `npm install` to install all dependencies.
 - Run `npm run start` to start the app (dev server runs on `http://localhost:4242` by default, see
-  [vite.config.ts](vite.config.ts)).
+  [vite.config.mts](vite.config.mts)).
 - Point your io.Connect Desktop configuration's Launchpad/System application entry to this app's URL, then start
   io.Connect Desktop to see your customized Launchpad. Refer to your io.Connect Desktop version's documentation for
   the exact application-definition file and property to update.

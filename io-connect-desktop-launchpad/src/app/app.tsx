@@ -1,6 +1,7 @@
 import { lazy, Suspense, useContext, useEffect } from "react";
 import { IOConnectContext, IOConnectProvider } from "@interopio/react-hooks";
 import { ioConfig } from "../constants/constants";
+import "@interopio/theme/dist/io.platform.css";
 import "@interopio/workspaces-ui-react/dist/styles/workspaces.css";
 import "@interopio/components-react/dist/styles/components/ui/dropdown-menu.css";
 import "@interopio/components-react/dist/styles/components/ui/overlay-scrollbars-container.css";
